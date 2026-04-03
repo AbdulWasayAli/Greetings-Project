@@ -1,0 +1,103 @@
+@model Category
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("Categories", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Categories
+                            </a>
+                        </div>
+                        <h4 class="page-title">Edit Category</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title">Category Information</h4>
+                            
+                            <form method="post" action="@Url.Action("EditCategory", "Admin")" enctype="multipart/form-data">
+                                <input type="hidden" name="CategoryID" value="@Model.CategoryID" />
+                                
+                                <div class="mb-3">
+                                    <label for="CategoryName" class="form-label">Category Name</label>
+                                    <input type="text" class="form-control" id="CategoryName" name="CategoryName" 
+                                           value="@Model.CategoryName" placeholder="Enter category name" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid category name.
+                                    </div>
+                                </div>
+
+                                <!-- Current Image Display -->
+                                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                                {
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Image</label>
+                                        <div>
+                                            <img src="@Model.ImagePath" alt="@Model.CategoryName" class="img-fluid" style="max-height: 200px; border-radius: 5px;">
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="mb-3">
+                                    <label for="imageFile" class="form-label">Update Category Image</label>
+                                    <input type="file" class="form-control" id="imageFile" name="imageFile" 
+                                           accept="image/*">
+                                    <small class="form-text text-muted">
+                                        Leave empty to keep current image. Upload new image to replace.
+                                    </small>
+                                </div>
+
+                                <!-- New Image Preview -->
+                                <div class="mb-3" id="imagePreview" style="display: none;">
+                                    <label class="form-label">New Image Preview</label>
+                                    <div>
+                                        <img id="previewImg" src="#" alt="Preview" class="img-fluid" style="max-height: 200px; border-radius: 5px;">
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success me-2">
+                                        <i class="mdi mdi-check"></i> Update Category
+                                    </button>
+                                    <a href="@Url.Action("Categories", "Admin")" class="btn btn-secondary">
+                                        <i class="mdi mdi-close"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image preview functionality
+    document.getElementById('imageFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+    });
+</script>

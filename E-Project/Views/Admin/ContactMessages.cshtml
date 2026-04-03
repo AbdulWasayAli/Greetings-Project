@@ -1,0 +1,167 @@
+@model List<ContactMessage>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                        <h4 class="page-title">Contact Messages</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="header-title">All Messages</h4>
+                                <span class="badge bg-info">Total: @Model.Count</span>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Message</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var message in Model)
+                                        {
+                                            <tr>
+                                                <td>@message.Id</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0">
+                                                            <div class="avatar-sm rounded-circle bg-info">
+                                                                <span class="avatar-title text-white">
+                                                                    @message.Name.Substring(0, 1).ToUpper()
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-2">
+                                                            <h5 class="m-0 fw-semibold">@message.Name</h5>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="mailto:@message.Email" class="text-primary">@message.Email</a>
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(message.Phone))
+                                                    {
+                                                        <a href="tel:@message.Phone" class="text-success">@message.Phone</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Not provided</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <div style="max-width: 300px;">
+                                                        @if (message.Message.Length > 100)
+                                                        {
+                                                            <span>@message.Message.Substring(0, 100)...</span>
+                                                            <button class="btn btn-link btn-sm p-0" type="button" data-bs-toggle="modal" data-bs-target="#messageModal@(message.Id)">
+                                                                Read More
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@message.Message</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="text-muted">@message.CreatedAt.ToString("MMM dd, yyyy")</span><br />
+                                                    <small class="text-muted">@message.CreatedAt.ToString("hh:mm tt")</small>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="mailto:@message.Email?subject=Re: Your Message&body=Hello @message.Name,%0D%0A%0D%0AThank you for contacting us." 
+                                                           class="btn btn-sm btn-success" title="Reply via Email">
+                                                            <i class="mdi mdi-reply"></i> Reply
+                                                        </a>
+                                                        <a href="@Url.Action("DeleteContactMessage", "Admin", new { id = message.Id })" 
+                                                           class="btn btn-sm btn-danger"
+                                                           onclick="return confirm('Are you sure you want to delete this message?')" title="Delete Message">
+                                                            <i class="mdi mdi-delete"></i> Delete
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Message Modal -->
+                                            <div class="modal fade" id="messageModal@(message.Id)" tabindex="-1" aria-labelledby="messageModalLabel@(message.Id)" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="messageModalLabel@(message.Id)">Message from @message.Name</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <strong>Email:</strong> <a href="mailto:@message.Email">@message.Email</a>
+                                                            </div>
+                                                            @if (!string.IsNullOrEmpty(message.Phone))
+                                                            {
+                                                                <div class="mb-3">
+                                                                    <strong>Phone:</strong> <a href="tel:@message.Phone">@message.Phone</a>
+                                                                </div>
+                                                            }
+                                                            <div class="mb-3">
+                                                                <strong>Message:</strong>
+                                                                <div class="mt-2 p-3 bg-light rounded">
+                                                                    @message.Message
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a href="mailto:@message.Email?subject=Re: Your Message&body=Hello @message.Name,%0D%0A%0D%0AThank you for contacting us." 
+                                                               class="btn btn-success">
+                                                                <i class="mdi mdi-reply"></i> Reply via Email
+                                                            </a>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </tbody>
+                                </table>
+                                
+                                @if (!Model.Any())
+                                {
+                                    <div class="text-center py-4">
+                                        <i class="mdi mdi-email-outline" style="font-size: 3em; color: #ccc;"></i>
+                                        <h5 class="mt-2 text-muted">No Messages Found</h5>
+                                        <p class="text-muted">No contact messages have been received yet.</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

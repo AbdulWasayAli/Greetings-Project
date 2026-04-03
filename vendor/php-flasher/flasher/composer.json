@@ -1,0 +1,45 @@
+{
+    "name": "php-flasher/flasher",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://php-flasher.io",
+    "description": "The foundational PHP library for PHPFlasher, enabling the creation of framework-agnostic flash notifications. Ideal for building custom integrations or for use in PHP projects.",
+    "keywords": [
+        "php",
+        "flasher-core",
+        "framework-agnostic",
+        "custom-integrations",
+        "flash-notifications",
+        "open-source"
+    ],
+    "support": {
+        "issues": "https://github.com/php-flasher/php-flasher/issues",
+        "source": "https://github.com/php-flasher/php-flasher"
+    },
+    "authors": [
+        {
+            "name": "Younes ENNAJI",
+            "email": "younes.ennaji.pro@gmail.com",
+            "homepage": "https://www.linkedin.com/in/younes--ennaji/",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flasher\\Prime\\": ""
+        },
+        "files": [
+            "functions.php",
+            "helpers.php"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

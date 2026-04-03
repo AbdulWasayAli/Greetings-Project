@@ -1,0 +1,138 @@
+@model List<User>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("CreateUser", "Admin")" class="btn btn-success me-2">
+                                <i class="mdi mdi-plus"></i> Add New User
+                            </a>
+                            <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                        <h4 class="page-title">Manage Users</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="header-title">All Users</h4>
+                                <span class="badge bg-info">Total: @Model.Count</span>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model)
+                                        {
+                                            <tr>
+                                                <td>@user.Id</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-shrink-0">
+                                                            <div class="avatar-sm rounded-circle bg-primary">
+                                                                <span class="avatar-title text-white">
+                                                                    @user.Name.Substring(0, 1).ToUpper()
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-2">
+                                                            <h5 class="m-0 fw-semibold">@user.Name</h5>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>@user.Email</td>
+                                                <td>@user.Phone</td>
+                                                <td>
+                                                    <span class="badge @(user.Role == "Admin" ? "bg-danger" : "bg-success")">
+                                                        @user.Role
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="@Url.Action("UserDetails", "Admin", new { id = user.Id })" 
+                                                           class="btn btn-sm btn-info">
+                                                            <i class="mdi mdi-eye"></i> View
+                                                        </a>
+                                                        <a href="@Url.Action("EditUser", "Admin", new { id = user.Id })" 
+                                                           class="btn btn-sm btn-warning">
+                                                            <i class="mdi mdi-pencil"></i> Edit
+                                                        </a>
+                                                        @if (user.Role != "Admin")
+                                                        {
+                                                            <form method="post" action="@Url.Action("ChangeUserRole", "Admin")" class="d-inline">
+                                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                                <input type="hidden" name="role" value="Admin" />
+                                                                <button type="submit" class="btn btn-sm btn-success" 
+                                                                        onclick="return confirm('Make this user an Admin?')">
+                                                                    <i class="mdi mdi-account-star"></i> Admin
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                        else
+                                                        {
+                                                            <form method="post" action="@Url.Action("ChangeUserRole", "Admin")" class="d-inline">
+                                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                                <input type="hidden" name="role" value="User" />
+                                                                <button type="submit" class="btn btn-sm btn-secondary" 
+                                                                        onclick="return confirm('Remove Admin privileges?')">
+                                                                    <i class="mdi mdi-account"></i> User
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                        
+                                                        @if (user.Role != "Admin")
+                                                        {
+                                                            <a href="@Url.Action("DeleteUser", "Admin", new { id = user.Id })" 
+                                                               class="btn btn-sm btn-danger"
+                                                               onclick="return confirm('Are you sure you want to delete this user?')">
+                                                                <i class="mdi mdi-delete"></i> Delete
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                
+                                @if (!Model.Any())
+                                {
+                                    <div class="text-center py-4">
+                                        <i class="mdi mdi-account-off" style="font-size: 3em; color: #ccc;"></i>
+                                        <h5 class="mt-2 text-muted">No Users Found</h5>
+                                        <p class="text-muted">No users have registered yet.</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

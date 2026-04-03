@@ -1,0 +1,860 @@
+@{
+    ViewBag.Title = "Send Card";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg rounded-4 border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">Send E-Card</h3>
+                    <p class="mb-0">Share beautiful cards with your loved ones</p>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.HasActiveSubscription)
+                    {
+                        <div class="alert alert-success mb-4" id="subscriptionStatus">
+                            <i class="fas fa-check-circle"></i> Pro subscription active! 
+                            Emails remaining today: <strong id="emailsRemaining">@ViewBag.CardsRemaining</strong>
+                        </div>
+
+                        <form id="sendCardForm" novalidate>
+                            @Html.AntiForgeryToken()
+                            <!-- Card Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Select Card Template</label>
+                                <div class="row" id="cardTemplates">
+                                    <!-- Birthday Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="birthday" 
+                                             data-title="🎉 Happy Birthday!" 
+                                             data-message="Wishing you a day filled with happiness and joy! May this special day bring you wonderful memories and all the blessings your heart can hold. Have an amazing birthday celebration! 🎂🎈">
+                                            <img src="/User/images/1c.jpg" class="card-img-top" alt="Birthday Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Birthday Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Wedding Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="wedding" 
+                                             data-title="💒 Congratulations on Your Wedding!" 
+                                             data-message="Wishing you both a lifetime of love, happiness, and beautiful memories together! May your journey as husband and wife be filled with endless joy, laughter, and countless blessings. Congratulations! 💕👰🤵">
+                                            <img src="/User/images/2c.jpg" class="card-img-top" alt="Wedding Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Wedding Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- New Year Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="newyear" 
+                                             data-title="🎊 Happy New Year!" 
+                                             data-message="May this new year bring you prosperity, good health, and endless opportunities! Here's to new adventures, fresh beginnings, and making wonderful memories. Cheers to a fantastic year ahead! 🥳✨">
+                                            <img src="/User/images/3c.jpg" class="card-img-top" alt="New Year Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>New Year Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Eid ul Fitr Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="eid-fitr" 
+                                             data-title="🌙 Eid Mubarak!" 
+                                             data-message="May this blessed occasion of Eid ul Fitr bring you joy, peace, and prosperity! May Allah accept your fasting and prayers. Wishing you and your family a very happy and blessed Eid! 🕌⭐">
+                                            <img src="/User/images/4c.jpg" class="card-img-top" alt="Eid ul Fitr Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Eid ul Fitr Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Eid ul Adha Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="eid-adha" 
+                                             data-title="🐑 Eid ul Adha Mubarak!" 
+                                             data-message="On this holy occasion of Eid ul Adha, may Allah bless you with happiness, peace, and prosperity! May your sacrifices be accepted and your prayers be answered. Eid Mubarak to you and your loved ones! 🕌🤲">
+                                            <img src="/User/images/5c.jpg" class="card-img-top" alt="Eid ul Adha Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Eid ul Adha Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Christmas Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="christmas" 
+                                             data-title="🎄 Merry Christmas!" 
+                                             data-message="Wishing you a Christmas filled with joy, love, and laughter! May the magic of Christmas bring you wonderful moments with family and friends. May Santa bring you all the happiness you deserve! 🎅🎁">
+                                            <img src="/User/images/6c.jpg" class="card-img-top" alt="Christmas Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Christmas Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Thanksgiving Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="thanksgiving" 
+                                             data-title="🦃 Happy Thanksgiving!" 
+                                             data-message="This Thanksgiving, we're grateful for wonderful people like you! May your day be filled with good food, great company, and countless blessings. Thank you for being such an amazing part of our lives! 🍂🥧">
+                                            <img src="/User/images/7c.webp" class="card-img-top" alt="Thanksgiving Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Thanksgiving Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Diwali Card -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card template-card border-2" data-template="diwali" 
+                                             data-title="🪔 Happy Diwali!" 
+                                             data-message="May the festival of lights illuminate your life with joy, prosperity, and good health! May Goddess Lakshmi bless you with wealth and happiness. Wishing you and your family a very Happy and Prosperous Diwali! ✨🎆">
+                                            <img src="/User/images/8c.jpg" class="card-img-top" alt="Diwali Card" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body text-center">
+                                                <h6>Diwali Card</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selectedTemplate" name="Image" required>
+                                <div class="invalid-feedback">Please select a card template</div>
+                            </div>
+
+                            <!-- Custom Image Upload -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <label class="form-label fw-bold">Or Upload Your Own Image</label>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchToTemplates()">
+                                        Back to Templates
+                                    </button>
+                                </div>
+                                <div class="card border-dashed border-2" id="imageUploadArea">
+                                    <div class="card-body text-center py-4">
+                                        <div id="uploadPrompt">
+                                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                            <h5 class="text-muted">Upload Custom Image</h5>
+                                            <p class="text-muted mb-3">Drag and drop an image here, or click to select</p>
+                                            <input type="file" id="customImageInput" accept="image/*" class="d-none">
+                                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('customImageInput').click()">
+                                                Choose Image
+                                            </button>
+                                            <div class="mt-2">
+                                                <small class="text-muted">Supports: JPG, PNG, GIF (Max: 5MB)</small>
+                                            </div>
+                                        </div>
+                                        <div id="imagePreviewContainer" class="d-none">
+                                            <img id="customImagePreview" src="" alt="Custom Image Preview" class="img-fluid rounded" style="max-height: 300px; max-width: 100%;">
+                                            <div class="mt-3">
+                                                <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="useCustomImage()">
+                                                    <i class="fas fa-check"></i> Use This Image
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCustomImage()">
+                                                    <i class="fas fa-trash"></i> Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="customImageError" class="text-danger d-none mt-2">
+                                    <small></small>
+                                </div>
+                            </div>
+
+                            <!-- Card Title -->
+                            <div class="mb-4">
+                                <label for="cardTitle" class="form-label fw-bold">Card Title</label>
+                                <input type="text" id="cardTitle" name="Title" class="form-control form-control-lg" 
+                                       placeholder="Enter card title (e.g., Happy Birthday!)" required maxlength="100">
+                                <div class="invalid-feedback">Card title is required</div>
+                            </div>
+
+                            <!-- Personal Message -->
+                            <div class="mb-4">
+                                <label for="personalMessage" class="form-label fw-bold">Personal Message</label>
+                                <textarea id="personalMessage" name="Message" class="form-control" rows="4" 
+                                          placeholder="Write your heartfelt message here..." required maxlength="500"></textarea>
+                                <div class="form-text">Maximum 500 characters</div>
+                                <div class="invalid-feedback">Personal message is required</div>
+                            </div>
+
+                            <!-- Recipients -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Recipients</label>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="email" id="recipientEmail" class="form-control form-control-lg" 
+                                               placeholder="Enter email address">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-outline-primary btn-lg w-100" onclick="addRecipient()">
+                                            Add Email
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-3" id="recipientsList"></div>
+                                <div class="form-text">You can add multiple email addresses</div>
+                                <div id="emailError" class="text-danger d-none">Please add at least one recipient</div>
+                            </div>
+
+                            <!-- Preview Section -->
+                            <div class="mb-4">
+                                <button type="button" class="btn btn-info btn-lg" data-bs-toggle="collapse" 
+                                        data-bs-target="#previewCard" aria-expanded="false">
+                                    Preview Card
+                                </button>
+                                <div class="collapse mt-3" id="previewCard">
+                                    <div class="card bg-light">
+                                        <div class="card-body text-center">
+                                            <div id="previewContent">
+                                                <p class="text-muted">Select a template and fill in details to preview your card</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg shadow-sm" id="sendBtn">
+                                    <span id="sendBtnText">
+                                        <i class="fas fa-paper-plane"></i> Send Card
+                                    </span>
+                                    <span id="sendBtnLoader" class="d-none">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Sending...
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-lock fa-3x text-muted"></i>
+                            </div>
+                            <h4 class="text-muted">Pro Subscription Required</h4>
+                            <p class="text-muted mb-4">You need an active Pro subscription to send e-cards</p>
+                            <a href="@Url.Action("Subscribe", "Home")" class="btn btn-primary btn-lg">
+                                Subscribe Now
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalTitle" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalTitle">Card Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="resultModalBody">
+                <!-- Result message will be displayed here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .template-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-color: #dee2e6 !important;
+    }
+    
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border-color: #007bff !important;
+    }
+    
+    .template-card.selected {
+        border-color: #007bff !important;
+        background-color: #e3f2fd;
+    }
+    
+    .recipient-tag {
+        display: inline-block;
+        background: #007bff;
+        color: white;
+        padding: 8px 12px;
+        margin: 4px;
+        border-radius: 25px;
+        font-size: 0.9em;
+        font-weight: 500;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .recipient-tag .remove-btn {
+        margin-left: 8px;
+        cursor: pointer;
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.1em;
+        padding: 2px 6px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        transition: background 0.2s ease;
+    }
+    
+    .recipient-tag .remove-btn:hover {
+        background: rgba(255,255,255,0.4);
+    }
+    
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    .template-card.selected::after {
+        content: '✓';
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #007bff;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    
+    #cardTemplates .template-card {
+        position: relative;
+    }
+    
+    /* Custom Image Upload Styles */
+    .border-dashed {
+        border-style: dashed !important;
+    }
+    
+    #imageUploadArea {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    #imageUploadArea:hover {
+        border-color: #007bff !important;
+        background-color: #f8f9fa;
+    }
+    
+    #imageUploadArea.border-primary {
+        border-color: #007bff !important;
+        background-color: #e3f2fd !important;
+    }
+    
+    #imageUploadArea.border-success {
+        border-color: #28a745 !important;
+        background-color: #d4edda !important;
+    }
+    
+    #customImagePreview {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .upload-icon-animation {
+        animation: bounceUpload 2s infinite;
+    }
+    
+    @@keyframes bounceUpload {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+</style>
+
+<script>
+    let selectedTemplate = '';
+    let customImageFile = null;
+    let customImageDataUrl = '';
+    let recipients = [];
+
+    // Custom Image Upload Handlers
+    const customImageInput = document.getElementById('customImageInput');
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const customImagePreview = document.getElementById('customImagePreview');
+    const customImageError = document.getElementById('customImageError');
+
+    // File input change handler
+    customImageInput.addEventListener('change', handleImageUpload);
+
+    // Drag and drop handlers
+    imageUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        imageUploadArea.classList.add('border-primary', 'bg-light');
+    });
+
+    imageUploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        imageUploadArea.classList.remove('border-primary', 'bg-light');
+    });
+
+    imageUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        imageUploadArea.classList.remove('border-primary', 'bg-light');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            customImageInput.files = files;
+            handleImageUpload({ target: { files: files } });
+        }
+    });
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Clear any previous errors
+        hideCustomImageError();
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showCustomImageError('Please select a valid image file (JPG, PNG, GIF)');
+            return;
+        }
+
+        // Validate file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            showCustomImageError('Image size must be less than 5MB');
+            return;
+        }
+
+        customImageFile = file;
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            customImageDataUrl = e.target.result;
+            customImagePreview.src = customImageDataUrl;
+            uploadPrompt.classList.add('d-none');
+            imagePreviewContainer.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function useCustomImage() {
+        if (!customImageFile) return;
+
+        // Clear template selection
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+        selectedTemplate = 'custom';
+        document.getElementById('selectedTemplate').value = 'custom';
+
+        // Update preview
+        updatePreview();
+
+        // Show success feedback
+        imageUploadArea.classList.add('border-success');
+        setTimeout(() => {
+            imageUploadArea.classList.remove('border-success');
+        }, 2000);
+    }
+
+    function removeCustomImage() {
+        customImageFile = null;
+        customImageDataUrl = '';
+        customImageInput.value = '';
+        uploadPrompt.classList.remove('d-none');
+        imagePreviewContainer.classList.add('d-none');
+        hideCustomImageError();
+
+        // If custom was selected, clear the selection
+        if (selectedTemplate === 'custom') {
+            selectedTemplate = '';
+            document.getElementById('selectedTemplate').value = '';
+            updatePreview();
+        }
+    }
+
+    function switchToTemplates() {
+        // Clear custom image
+        removeCustomImage();
+        
+        // Scroll to templates
+        document.getElementById('cardTemplates').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showCustomImageError(message) {
+        customImageError.querySelector('small').textContent = message;
+        customImageError.classList.remove('d-none');
+    }
+
+    function hideCustomImageError() {
+        customImageError.classList.add('d-none');
+    }
+
+    // Template selection
+    document.querySelectorAll('.template-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Clear custom image selection
+            if (selectedTemplate === 'custom') {
+                removeCustomImage();
+            }
+            
+            // Remove previous selections
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+            
+            // Add selection to clicked card
+            this.classList.add('selected');
+            selectedTemplate = this.dataset.template;
+            document.getElementById('selectedTemplate').value = selectedTemplate;
+            
+            // Populate dummy text based on selected template
+            const dummyTitle = this.dataset.title;
+            const dummyMessage = this.dataset.message;
+            
+            document.getElementById('cardTitle').value = dummyTitle;
+            document.getElementById('personalMessage').value = dummyMessage;
+            
+            updatePreview();
+        });
+    });
+
+    // Add recipient
+    function addRecipient() {
+        const emailInput = document.getElementById('recipientEmail');
+        const email = emailInput.value.trim();
+        
+        if (!email) {
+            emailInput.focus();
+            return;
+        }
+        
+        if (!validateEmail(email)) {
+            emailInput.classList.add('is-invalid');
+            emailInput.focus();
+            return;
+        }
+        
+        if (recipients.includes(email)) {
+            alert('This email is already added!');
+            emailInput.focus();
+            return;
+        }
+        
+        // Check limit (max 10 recipients for Pro plan)
+        if (recipients.length >= 10) {
+            alert('Maximum 10 recipients allowed per card');
+            return;
+        }
+        
+        recipients.push(email);
+        updateRecipientsList();
+        emailInput.value = '';
+        emailInput.classList.remove('is-invalid');
+        document.getElementById('emailError').classList.add('d-none');
+        
+        // Show success feedback
+        emailInput.style.borderColor = '#28a745';
+        setTimeout(() => {
+            emailInput.style.borderColor = '';
+        }, 1000);
+    }
+
+    // Validate email
+    function validateEmail(email) {
+        const re = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        return re.test(email);
+    }
+
+    // Update recipients list
+    function updateRecipientsList() {
+        const container = document.getElementById('recipientsList');
+        if (recipients.length === 0) {
+            container.innerHTML = '<p class="text-muted">No recipients added yet</p>';
+        } else {
+            container.innerHTML = `
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="badge bg-secondary me-2">${recipients.length} recipient(s):</span>
+                    ${recipients.map((email, index) => 
+                        `<span class="recipient-tag bg-primary text-white">
+                            ${email}
+                            <span class="remove-btn ms-2" onclick="removeRecipient('${email}')" title="Remove">×</span>
+                        </span>`
+                    ).join('')}
+                </div>
+            `;
+        }
+    }
+
+    // Remove recipient
+    function removeRecipient(email) {
+        recipients = recipients.filter(e => e !== email);
+        updateRecipientsList();
+    }
+
+    // Update preview
+    function updatePreview() {
+        const title = document.getElementById('cardTitle').value;
+        const message = document.getElementById('personalMessage').value;
+        const previewContent = document.getElementById('previewContent');
+        
+        if ((selectedTemplate || customImageDataUrl) && (title || message)) {
+            let imageSrc = '';
+            let templateName = '';
+            
+            if (selectedTemplate === 'custom' && customImageDataUrl) {
+                imageSrc = customImageDataUrl;
+                templateName = 'Custom Image';
+            } else if (selectedTemplate) {
+                // Get the image source from the selected template
+                const selectedCard = document.querySelector(`.template-card[data-template="${selectedTemplate}"]`);
+                imageSrc = selectedCard ? selectedCard.querySelector('img').src : '/User/images/default.jpg';
+                templateName = selectedTemplate;
+            }
+            
+            previewContent.innerHTML = `
+                <div class="card" style="max-width: 350px; margin: 0 auto; border: 2px solid #007bff;">
+                    <img src="${imageSrc}" class="card-img-top" alt="Card Preview" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">${title || 'Your Title Here'}</h5>
+                        <p class="card-text">${message || 'Your message here...'}</p>
+                        <small class="text-muted">Template: ${templateName}</small>
+                    </div>
+                </div>
+            `;
+        } else {
+            previewContent.innerHTML = '<p class="text-muted">Select a template or upload an image, and fill in details to preview your card</p>';
+        }
+    }
+
+    // Form submission
+    document.getElementById('sendCardForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validate form
+        let isValid = true;
+        
+        // Check if either template is selected OR custom image is uploaded
+        if (!selectedTemplate && !customImageDataUrl) {
+            alert('Please select a card template or upload a custom image');
+            document.querySelector('.template-card').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+        
+        const title = document.getElementById('cardTitle').value.trim();
+        if (!title) {
+            document.getElementById('cardTitle').classList.add('is-invalid');
+            isValid = false;
+        } else {
+            document.getElementById('cardTitle').classList.remove('is-invalid');
+        }
+        
+        const message = document.getElementById('personalMessage').value.trim();
+        if (!message) {
+            document.getElementById('personalMessage').classList.add('is-invalid');
+            isValid = false;
+        } else {
+            document.getElementById('personalMessage').classList.remove('is-invalid');
+        }
+        
+        if (recipients.length === 0) {
+            document.getElementById('emailError').classList.remove('d-none');
+            document.getElementById('recipientEmail').focus();
+            return;
+        } else {
+            document.getElementById('emailError').classList.add('d-none');
+        }
+        
+        if (!isValid) {
+            return;
+        }
+        
+        // Prepare form data based on selection type
+        let formData;
+        
+        if (selectedTemplate === 'custom' && customImageDataUrl) {
+            // For custom image, send the base64 data
+            formData = {
+                Image: 'custom',
+                CustomImageData: customImageDataUrl,
+                Title: title,
+                Message: message,
+                Emails: recipients
+            };
+        } else {
+            // For template selection
+            formData = {
+                Image: selectedTemplate,
+                Title: title,
+                Message: message,
+                Emails: recipients
+            };
+        }
+        
+        // Show loading state
+        document.getElementById('sendBtnText').classList.add('d-none');
+        document.getElementById('sendBtnLoader').classList.remove('d-none');
+        document.getElementById('sendBtn').disabled = true;
+        
+        try {
+            const response = await fetch('@Url.Action("SendCard", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            // Show result modal
+            const modal = document.getElementById('resultModal');
+            const modalTitle = document.getElementById('resultModalTitle');
+            const modalBody = document.getElementById('resultModalBody');
+            
+            if (result.success) {
+                modalTitle.textContent = '🎉 Success!';
+                modalTitle.className = 'modal-title text-success';
+                modalBody.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h5>Card sent successfully!</h5>
+                        <p>Your card has been sent to <strong>${recipients.length}</strong> recipient(s):</p>
+                        <ul class="list-unstyled">
+                            ${recipients.map(email => `<li>✅ ${email}</li>`).join('')}
+                        </ul>
+                        <p class="text-muted mt-3">Emails remaining today: <strong>${result.remainingCards || 0}</strong></p>
+                    </div>
+                `;
+                
+                // Update the page's email remaining count dynamically
+                const emailsRemainingElement = document.getElementById('emailsRemaining');
+                if (emailsRemainingElement && result.remainingCards !== undefined) {
+                    emailsRemainingElement.textContent = result.remainingCards;
+                    
+                    // Add a subtle animation to highlight the change
+                    emailsRemainingElement.classList.add('text-warning');
+                    setTimeout(() => {
+                        emailsRemainingElement.classList.remove('text-warning');
+                    }, 2000);
+                }
+                
+                // Reset form after success
+                setTimeout(() => {
+                    document.getElementById('sendCardForm').reset();
+                    recipients = [];
+                    updateRecipientsList();
+                    selectedTemplate = '';
+                    customImageFile = null;
+                    customImageDataUrl = '';
+                    removeCustomImage();
+                    document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                    document.getElementById('selectedTemplate').value = '';
+                    updatePreview();
+                }, 2000);
+            } else {
+                modalTitle.textContent = '❌ Error';
+                modalTitle.className = 'modal-title text-danger';
+                modalBody.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h5>Failed to send card</h5>
+                        <p class="text-danger">${result.error || 'An unexpected error occurred'}</p>
+                        <p class="text-muted">Please try again or contact support if the problem persists.</p>
+                    </div>
+                `;
+            }
+            
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+            
+            // Ensure proper focus management - focus on the close button when modal opens
+            modal.addEventListener('shown.bs.modal', function () {
+                const closeBtn = modal.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.focus();
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            const modal = document.getElementById('resultModal');
+            document.getElementById('resultModalTitle').textContent = '❌ Network Error';
+            document.getElementById('resultModalTitle').className = 'modal-title text-danger';
+            document.getElementById('resultModalBody').innerHTML = `
+                <div class="text-center">
+                    <i class="fas fa-wifi fa-3x text-muted mb-3"></i>
+                    <h5>Connection Error</h5>
+                    <p>Unable to send the card. Please check your internet connection and try again.</p>
+                </div>
+            `;
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+            
+            // Ensure proper focus management for error modal too
+            modal.addEventListener('shown.bs.modal', function () {
+                const closeBtn = modal.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.focus();
+                }
+            });
+        } finally {
+            // Hide loading state
+            document.getElementById('sendBtnText').classList.remove('d-none');
+            document.getElementById('sendBtnLoader').classList.add('d-none');
+            document.getElementById('sendBtn').disabled = false;
+        }
+    });
+
+    // Update preview on input changes
+    document.getElementById('cardTitle').addEventListener('input', updatePreview);
+    document.getElementById('personalMessage').addEventListener('input', updatePreview);
+    
+    // Enter key to add recipient
+    document.getElementById('recipientEmail').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addRecipient();
+        }
+    });
+
+    // Function to refresh email count from server
+    async function refreshEmailCount() {
+        try {
+            const response = await fetch('@Url.Action("GetEmailCount", "Home")', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                const emailsRemainingElement = document.getElementById('emailsRemaining');
+                if (emailsRemainingElement && result.remainingCards !== undefined) {
+                    // Only update if the count has actually changed
+                    if (emailsRemainingElement.textContent !== result.remainingCards.toString()) {
+                        emailsRemainingElement.textContent = result.remainingCards;
+                    }
+                }
+            }
+        } catch (error) {
+            console.log('Could not refresh email count:', error);
+        }
+    }
+
+    // Refresh email count every 30 seconds to keep it current
+    setInterval(refreshEmailCount, 30000);
+    
+    // Also refresh when the page becomes visible again (user switches back to tab)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            refreshEmailCount();
+        }
+    });
+</script>

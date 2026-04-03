@@ -1,0 +1,148 @@
+@model Card
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Edit Card";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("Cards", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Cards
+                            </a>
+                        </div>
+                        <h4 class="page-title">Edit Card</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title">Card Information</h4>
+                            
+                            <form method="post" action="@Url.Action("EditCard", "Admin")" enctype="multipart/form-data">
+                                <input type="hidden" name="CardID" value="@Model.CardID" />
+                                
+                                <div class="mb-3">
+                                    <label for="CategoryID" class="form-label">Category</label>
+                                    <select class="form-select" id="CategoryID" name="CategoryID" required>
+                                        <option value="">Select Category</option>
+                                        @foreach (var category in ViewBag.Categories)
+                                        {
+                                            <option value="@category.CategoryID" selected="@(category.CategoryID == Model.CategoryID)">
+                                                @category.CategoryName
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a category.
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Title" class="form-label">Card Title</label>
+                                    <input type="text" class="form-control" id="Title" name="Title" 
+                                           value="@Model.Title" placeholder="Enter card title" maxlength="200" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid title.
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Message" class="form-label">Card Message</label>
+                                    <textarea class="form-control" id="Message" name="Message" rows="5" 
+                                              placeholder="Enter your card message here..." required>@Model.Message</textarea>
+                                    <div class="invalid-feedback">
+                                        Please provide a message for the card.
+                                    </div>
+                                </div>
+
+                                <!-- Current Media Display -->
+                                @if (!string.IsNullOrEmpty(Model.MediaPath))
+                                {
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Media</label>
+                                        <div>
+                                            @if (Model.MediaPath.Contains(".mp4") || Model.MediaPath.Contains(".avi") || Model.MediaPath.Contains(".mov"))
+                                            {
+                                                <video src="@Model.MediaPath" controls class="img-fluid" style="max-height: 200px; border-radius: 5px;"></video>
+                                            }
+                                            else
+                                            {
+                                                <img src="@Model.MediaPath" alt="@Model.Title" class="img-fluid" style="max-height: 200px; border-radius: 5px;">
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="mb-3">
+                                    <label for="mediaFile" class="form-label">Update Card Media</label>
+                                    <input type="file" class="form-control" id="mediaFile" name="mediaFile" 
+                                           accept="image/*,video/*">
+                                    <small class="form-text text-muted">
+                                        Leave empty to keep current media. Upload new file to replace.
+                                    </small>
+                                </div>
+
+                                <!-- New Media Preview -->
+                                <div class="mb-3" id="mediaPreview" style="display: none;">
+                                    <label class="form-label">New Media Preview</label>
+                                    <div>
+                                        <img id="previewImg" src="#" alt="Preview" class="img-fluid" style="max-height: 200px; border-radius: 5px; display: none;">
+                                        <video id="previewVideo" controls class="img-fluid" style="max-height: 200px; border-radius: 5px; display: none;"></video>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success me-2">
+                                        <i class="mdi mdi-check"></i> Update Card
+                                    </button>
+                                    <a href="@Url.Action("Cards", "Admin")" class="btn btn-secondary">
+                                        <i class="mdi mdi-close"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Media preview functionality
+    document.getElementById('mediaFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewImg = document.getElementById('previewImg');
+        const previewVideo = document.getElementById('previewVideo');
+        const mediaPreview = document.getElementById('mediaPreview');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.startsWith('image/')) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    previewVideo.style.display = 'none';
+                } else if (file.type.startsWith('video/')) {
+                    previewVideo.src = e.target.result;
+                    previewVideo.style.display = 'block';
+                    previewImg.style.display = 'none';
+                }
+                mediaPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            mediaPreview.style.display = 'none';
+        }
+    });
+</script>

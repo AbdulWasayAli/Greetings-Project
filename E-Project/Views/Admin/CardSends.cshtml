@@ -1,0 +1,244 @@
+@model IEnumerable<E_Project.Models.CardSend>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Card Sends";
+}
+
+<div class="content-page">
+    <div class="content">
+        <!-- Topbar Start -->
+        <div class="navbar-custom">
+            <ul class="list-unstyled topbar-menu float-end mb-0">
+                <li class="dropdown notification-list">
+                    <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <span class="account-user-avatar">
+                            <img src="~/Dashboard/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                        </span>
+                        <span>
+                            <span class="account-user-name">Admin</span>
+                            <span class="account-position">Administrator</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-view-dashboard me-1"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="@Url.Action("Logout", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-logout me-1"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <button class="button-menu-mobile open-left">
+                <i class="mdi mdi-menu"></i>
+            </button>
+        </div>
+        <!-- end Topbar -->
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Card Sends History</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Admin</a></li>
+                                <li class="breadcrumb-item active">Card Sends</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <!-- Stats Row -->
+            <div class="row">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-send widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Total Sends</h5>
+                            <h3 class="mt-3 mb-3">@Model.Count()</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-success me-2">All time</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-calendar-today widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Today</h5>
+                            <h3 class="mt-3 mb-3">@Model.Count(cs => cs.SentAt.Date == DateTime.Today)</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-info me-2">Cards sent today</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-calendar-week widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">This Week</h5>
+                            <h3 class="mt-3 mb-3">@Model.Count(cs => cs.SentAt >= DateTime.Today.AddDays(-7))</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-warning me-2">Last 7 days</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-check-circle widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Success Rate</h5>
+                            <h3 class="mt-3 mb-3">@(Model.Count() > 0 ? Math.Round((double)Model.Count(cs => cs.Status == "Sent") / Model.Count() * 100, 1) : 0)%</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-success me-2">Delivered successfully</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Sends Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-sm-5">
+                                    <h4 class="header-title">Card Send History</h4>
+                                    <p class="text-muted">Track all card sends and deliveries</p>
+                                </div>
+                                <div class="col-sm-7">
+                                    <div class="text-sm-end">
+                                        <button type="button" class="btn btn-primary mb-2">
+                                            <i class="mdi mdi-refresh"></i> Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-striped dt-responsive nowrap" id="products-datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Sender</th>
+                                            <th>Recipient</th>
+                                            <th>Card</th>
+                                            <th>Status</th>
+                                            <th>Sent Date</th>
+                                            <th>Message</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var cardSend in Model)
+                                        {
+                                            <tr>
+                                                <td>@cardSend.Id</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="mdi mdi-account"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h5 class="m-0 font-size-14">@(cardSend.User?.Name ?? "Unknown")</h5>
+                                                            <p class="m-0 text-muted font-size-12">@(cardSend.User?.Email ?? "No email")</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="m-0 font-size-14">@cardSend.RecipientName</h5>
+                                                        <p class="m-0 text-muted font-size-12">@cardSend.RecipientEmail</p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-primary rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="mdi mdi-card-text text-white"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h5 class="m-0 font-size-14">@(cardSend.Card?.Title ?? "Card #" + cardSend.CardId)</h5>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge @(cardSend.Status == "Sent" ? "bg-soft-success text-success" : 
+                                                                         cardSend.Status == "Delivered" ? "bg-soft-primary text-primary" : 
+                                                                         "bg-soft-danger text-danger")">
+                                                        @cardSend.Status
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-muted">@cardSend.SentAt.ToString("MMM dd, yyyy")</span>
+                                                    <br>
+                                                    <small class="text-muted">@cardSend.SentAt.ToString("hh:mm tt")</small>
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(cardSend.Message))
+                                                    {
+                                                        <span class="text-truncate d-inline-block" style="max-width: 150px;" title="@cardSend.Message">
+                                                            @cardSend.Message
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">No message</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col -->
+            </div>
+
+        </div> <!-- container -->
+    </div> <!-- content -->
+</div>
+
+@section Scripts {
+    <!-- third party js -->
+    <script src="~/Dashboard/assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/responsive.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#products-datatable").DataTable({
+                language: {
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    }
+                },
+                drawCallback: function() {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+                }
+            });
+        });
+    </script>
+}

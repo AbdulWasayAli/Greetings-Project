@@ -1,0 +1,367 @@
+﻿<!-- Background Video -->
+<video autoplay muted loop playsinline class="bg-video">
+    <source src="~/User/images/iiii.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<!-- REGISTER FORM -->
+<div class="d-flex justify-content-center my-5 position-relative">
+    <div class="card shadow-lg bg-transparent"
+         style="max-width: 1000px; width: 100%; border-radius: 16px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.08);">
+        <div class="row g-0">
+
+            <!-- Left Side -->
+            <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-white p-5"
+                 style="background: rgba(67,0,86,0.6); border-radius:16px 0 0 16px;">
+                <h3 class="mb-3">Welcome Aboard!</h3>
+                <p class="text-center">Register now and start exploring amazing features</p>
+            </div>
+
+            <!-- Right Side -->
+            <div class="col-md-7 p-5"
+                 style="border-radius:0 16px 16px 0; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color:#fff;">
+
+                <!-- Heading Section -->
+                <h3 class="text-center form-heading mb-2">Account Register</h3>
+                <p class="text-center text-light mb-4">Please enter your details to create an account</p>
+
+                <!-- Register Form -->
+                <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <input type="text" name="name" id="nameInput"
+                               class="form-control rounded"
+                               placeholder="Full Name" required pattern="^[A-Za-z\s]+$">
+                        <div class="invalid-feedback">Full Name should contain only letters.</div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                        <input type="tel" name="phone" id="phoneInput"
+                               class="form-control rounded"
+                               placeholder="Phone (11 digits)" required pattern="^[0-9]{11}$">
+                        <div class="invalid-feedback">Enter a valid 11-digit phone number.</div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <input type="email" name="email" id="emailInput"
+                               class="form-control rounded"
+                               placeholder="Email" required>
+                        <div class="invalid-feedback">Please enter a valid email.</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="password" name="password" id="passwordInput"
+                                   class="form-control rounded-start"
+                                   placeholder="Password" minlength="6" required>
+                            <button class="btn btn-outline-light toggle-password"
+                                    type="button" data-target="passwordInput">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <div class="invalid-feedback">Password must be at least 6 characters long.</div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="password" name="confirmPassword" id="confirmPasswordInput"
+                                   class="form-control rounded-start"
+                                   placeholder="Confirm Password" minlength="6" required>
+                            <button class="btn btn-outline-light toggle-password"
+                                    type="button" data-target="confirmPasswordInput">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <div class="invalid-feedback">Passwords do not match.</div>
+                        </div>
+                    </div>
+
+                    <!-- Register Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-gradient text-white fw-bold py-2 rounded">
+                            REGISTER
+                        </button>
+                    </div>
+                </form>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <!-- Login Link -->
+                <p class="text-center">
+                    Already have an account?
+                    <a asp-controller="Home" asp-action="Login" class="fw-bold text-warning text-decoration-none">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    /* Background video fullscreen */
+    .bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1; /* Peeche rehne ke liye */
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+
+        .form-control::placeholder {
+            color: #eee;
+        }
+
+        .form-control:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+    /* Gradient button */
+    .btn-gradient {
+        background: linear-gradient(135deg, #ffae00, #430056);
+        border: none;
+        transition: 0.3s ease-in-out;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #430056, #ffae00);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255,215,0,0.7);
+        }
+
+    /* Toggle button fix */
+    .input-group .btn {
+        border-left: none;
+    }
+</style>
+
+
+
+<!-- Extra CSS -->
+<style>
+  .btn-gradient {
+    background: linear-gradient(135deg, #430056, #ffae00);
+    border: none;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+  }
+  .btn-gradient:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #2d003d, #d89000);
+  }
+  .form-heading {
+    color: #ffae00;
+    font-weight: bold;
+  }
+  .form-control.rounded {
+    border-radius: 8px;
+  }
+  input:focus,
+  textarea:focus,
+  select:focus,
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  /* Input Group Eye Button Fix */
+  .input-group .form-control {
+    border-right: none;
+  }
+  .input-group .btn {
+    border-left: none;
+  }
+    /* Golden Glitter Hover for all inputs */
+    .form-control {
+        background: rgba(255, 255, 255, 0.15) !important; /* halka transparent */
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: #fff !important; /* input text white */
+        backdrop-filter: blur(4px); /* thoda glass effect */
+    }
+
+        .form-control::placeholder {
+            color: #fff !important; /* placeholder bhi white */
+            opacity: 0.9; /* thoda halka transparency */
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15) !important; /* focus pe bhi transparent hi rahe */
+            border: 1px solid #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            color: #fff !important; /* input text white */
+        }
+
+        .form-control:hover {
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+    /* Autofill background fix */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.15) inset !important;
+        -webkit-text-fill-color: #fff !important; /* autofill text white */
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+
+    /* Password input group buttons */
+    .input-group .btn:hover {
+        border-color: #ffd700;
+        color: #ffd700;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Register button gradient */
+    .btn-gradient {
+        background: linear-gradient(135deg, rgb(67, 0, 86), rgb(255, 174, 0));
+        border: none;
+        transition: 0.4s;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, rgb(255, 174, 0), rgb(67, 0, 86));
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+
+</style>
+
+<!-- JS Validation + Password Matching + Toggle Eye -->
+<script>
+(function () {
+  'use strict';
+  const form = document.querySelector('.needs-validation');
+  const nameInput = document.getElementById("nameInput");
+  const phoneInput = document.getElementById("phoneInput");
+  const emailInput = document.getElementById("emailInput");
+  const passwordInput = document.getElementById("passwordInput");
+  const confirmPasswordInput = document.getElementById("confirmPasswordInput");
+
+  // On submit check validity
+  form.addEventListener('submit', function (event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    form.classList.add('was-validated');
+  }, false);
+
+  // Full Name Validation
+  nameInput.addEventListener("input", function () {
+    const regex = /^[A-Za-z\s]+$/;
+    if (!regex.test(this.value.trim())) {
+      this.setCustomValidity("Full Name should contain only letters.");
+      this.classList.add("is-invalid");
+    } else {
+      this.setCustomValidity("");
+      this.classList.remove("is-invalid");
+      this.classList.add("is-valid");
+    }
+  });
+
+  // Phone Validation
+  phoneInput.addEventListener("input", function () {
+    const regex = /^[0-9]{11}$/;
+    if (!regex.test(this.value.trim())) {
+      this.setCustomValidity("Enter a valid 11-digit phone number.");
+      this.classList.add("is-invalid");
+    } else {
+      this.setCustomValidity("");
+      this.classList.remove("is-invalid");
+      this.classList.add("is-valid");
+    }
+  });
+
+  // Email Validation
+  emailInput.addEventListener("input", function () {
+    const regex = /^[^\s]+[^\s]+\.[^\s]+$/;
+    if (!regex.test(this.value.trim())) {
+      this.setCustomValidity("Enter a valid email.");
+      this.classList.add("is-invalid");
+    } else {
+      this.setCustomValidity("");
+      this.classList.remove("is-invalid");
+      this.classList.add("is-valid");
+    }
+  });
+
+  // Password Validation
+  passwordInput.addEventListener("input", function () {
+    if (this.value.length < 6) {
+      this.setCustomValidity("Password must be at least 6 characters");
+      this.classList.add("is-invalid");
+    } else {
+      this.setCustomValidity("");
+      this.classList.remove("is-invalid");
+      this.classList.add("is-valid");
+    }
+  });
+
+  // Confirm Password Validation
+  confirmPasswordInput.addEventListener("input", function () {
+    if (this.value !== passwordInput.value) {
+      this.setCustomValidity("Passwords do not match");
+      this.classList.add("is-invalid");
+    } else {
+      this.setCustomValidity("");
+      this.classList.remove("is-invalid");
+      this.classList.add("is-valid");
+    }
+  });
+
+  // Toggle Password Visibility
+  const toggleIcons = document.querySelectorAll(".toggle-password");
+  toggleIcons.forEach(btn => {
+    btn.addEventListener("click", function () {
+      const targetId = this.getAttribute("data-target");
+      const input = document.getElementById(targetId);
+      const icon = this.querySelector("i");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    });
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

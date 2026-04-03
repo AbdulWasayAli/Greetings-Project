@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    @if (ViewData["Title"]?.ToString() == "Home" || string.IsNullOrEmpty(ViewData["Title"]?.ToString()))
+    {
+        <title>Greetings</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"]</title>
+    }
+
+   
+    
+    <!-- Custom CSS -->
+   
+    <link rel="stylesheet" href="~/User/css/style.css" asp-append-version="true" />
+    <link rel="icon" href="~/User/images/logo.png" type="image/png" sizes="16x16">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+   
+    <link rel="stylesheet" href="~/User/css/cards.css">
+    @* contact css *@
+    <link rel="stylesheet" href="~/User/css/contact.css">
+    @* feedback css *@
+    <link rel="stylesheet" href="~/User/css/feedback.css">
+    
+
+   
+    @* Aos Library links *@
+    <link rel="stylesheet" href="~/lib/aos.library/aos.css" />
+<script src="~/lib/aos.library/aos.js"></script>
+    @* <link rel="stylesheet" href="~/User/css/glitter.css" /> *@
+
+</head>
+<body>
+    <!-- Preloader -->
+    <partial name="_Preloader"></partial>
+    <!-- SubHeader -->
+    @if (ViewBag.HideSubHeader != true)
+    {
+        <partial name="_SubHeader"></partial>
+    }
+    <!-- Header -->
+    <partial name="_Header"></partial>
+    <!-- Page Content -->
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+    <a href="#" class="arrow"><i><img src="~/User/images/arrow.png" alt=""></i></a>
+    <!-- Footer -->
+    <partial name="_Footer"></partial>
+
+
+
+
+    <!-- Scripts -->
+    @* aos libaray links *@
+   <script>
+  AOS.init({
+    duration: 400, // normal speed
+    once: false,
+    offset: 200
+  });
+</script>
+
+@* aos libaray links end *@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/User/js/java.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    @* <script src="~/User/js/glitter.js"></script> *@
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

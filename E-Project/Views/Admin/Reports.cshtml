@@ -1,0 +1,489 @@
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Reports";
+}
+
+<div class="content-page">
+    <div class="content">
+        <!-- Topbar Start -->
+        <div class="navbar-custom">
+            <ul class="list-unstyled topbar-menu float-end mb-0">
+                <li class="dropdown notification-list">
+                    <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <span class="account-user-avatar">
+                            <img src="~/Dashboard/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                        </span>
+                        <span>
+                            <span class="account-user-name">Admin</span>
+                            <span class="account-position">Administrator</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-view-dashboard me-1"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="@Url.Action("Logout", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-logout me-1"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <button class="button-menu-mobile open-left">
+                <i class="mdi mdi-menu"></i>
+            </button>
+        </div>
+        <!-- end Topbar -->
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Reports</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Admin</a></li>
+                                <li class="breadcrumb-item active">Reports</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <!-- Report Cards -->
+            <div class="row">
+                <!-- User Report -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">
+                                <i class="mdi mdi-account-multiple text-primary me-1"></i>
+                                User Report
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Role</th>
+                                            <th>Count</th>
+                                            <th>%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var userReportList = ViewBag.UserReport as IEnumerable<dynamic> ?? new List<dynamic>();
+                                            var totalUsers = userReportList.Any() ? userReportList.Sum(u => (int)u.Count) : 0;
+                                        }
+                                        @foreach (var user in userReportList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-soft-primary text-primary">@user.Role</span>
+                                                </td>
+                                                <td>@user.Count</td>
+                                                <td>
+                                                    @(totalUsers > 0 ? Math.Round((double)user.Count / totalUsers * 100, 1) : 0)%
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Report -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">
+                                <i class="mdi mdi-credit-card text-success me-1"></i>
+                                Subscription Report
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>Count</th>
+                                            <th>Revenue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var subscription in ViewBag.SubscriptionReport ?? new List<dynamic>())
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span class="badge @(subscription.Status == "Active" ? "bg-soft-success text-success" : 
+                                                                         subscription.Status == "Expired" ? "bg-soft-warning text-warning" : 
+                                                                         "bg-soft-danger text-danger")">
+                                                        @subscription.Status
+                                                    </span>
+                                                </td>
+                                                <td>@subscription.Count</td>
+                                                <td>$@subscription.Revenue</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Usage Report -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">
+                                <i class="mdi mdi-card-text text-info me-1"></i>
+                                Top Card Categories
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Cards</th>
+                                            <th>Usage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var cardUsageReportList = ViewBag.CardUsageReport as IEnumerable<dynamic> ?? new List<dynamic>();
+                                            var maxCards = cardUsageReportList.Any() ? cardUsageReportList.Max(c => (int)c.Count) : 1;
+                                        }
+                                        @foreach (var card in cardUsageReportList.Take(5))
+                                        {
+                                            <tr>
+                                                <td>@card.Category</td>
+                                                <td>@card.Count</td>
+                                                <td>
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-info" 
+                                                             style="width: @(maxCards > 0 ? (double)card.Count / maxCards * 100 : 0)%"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Reports -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-sm-6">
+                                    <h4 class="header-title">Export Reports</h4>
+                                    <p class="text-muted">Generate and download detailed reports</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="text-sm-end">
+                                        <a href="@Url.Action("ExportReportsToExcel", "Admin")" class="btn btn-success btn-sm me-1">
+                                            <i class="mdi mdi-file-excel me-1"></i>
+                                            Export Excel
+                                        </a>
+                                        <a href="@Url.Action("ExportReportsToPdf", "Admin")" class="btn btn-danger btn-sm me-1">
+                                            <i class="mdi mdi-file-pdf me-1"></i>
+                                            Export PDF
+                                        </a>
+                                        <button class="btn btn-primary btn-sm" onclick="location.reload()">
+                                            <i class="mdi mdi-refresh me-1"></i>
+                                            Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="border rounded p-3 text-center">
+                                        <i class="mdi mdi-calendar-range widget-icon bg-primary"></i>
+                                        <h3 class="mt-2">Monthly Report</h3>
+                                        <p class="text-muted">Last 30 days activity</p>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="generateReport('monthly')">Generate</button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="border rounded p-3 text-center">
+                                        <i class="mdi mdi-calendar-week widget-icon bg-success"></i>
+                                        <h3 class="mt-2">Weekly Report</h3>
+                                        <p class="text-muted">Last 7 days activity</p>
+                                        <button class="btn btn-outline-success btn-sm" onclick="generateReport('weekly')">Generate</button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="border rounded p-3 text-center">
+                                        <i class="mdi mdi-chart-pie widget-icon bg-warning"></i>
+                                        <h3 class="mt-2">Revenue Report</h3>
+                                        <p class="text-muted">Financial overview</p>
+                                        <button class="btn btn-outline-warning btn-sm" onclick="generateReport('revenue')">Generate</button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="border rounded p-3 text-center">
+                                        <i class="mdi mdi-account-group widget-icon bg-info"></i>
+                                        <h3 class="mt-2">User Analysis</h3>
+                                        <p class="text-muted">User behavior report</p>
+                                        <button class="btn btn-outline-info btn-sm" onclick="generateReport('user')">Generate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- container -->
+    </div> <!-- content -->
+</div>
+
+<!-- Report Result Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Generated Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="reportContent">
+                <!-- Report content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="downloadReport()">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentReportData = null;
+
+        function generateReport(reportType) {
+            // Show loading state
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Generating...';
+            button.disabled = true;
+
+            let url = '';
+            let title = '';
+            
+            switch(reportType) {
+                case 'monthly':
+                    url = '@Url.Action("GenerateMonthlyReport", "Admin")';
+                    title = 'Monthly Report';
+                    break;
+                case 'weekly':
+                    url = '@Url.Action("GenerateWeeklyReport", "Admin")';
+                    title = 'Weekly Report';
+                    break;
+                case 'revenue':
+                    url = '@Url.Action("GenerateRevenueReport", "Admin")';
+                    title = 'Revenue Report';
+                    break;
+                case 'user':
+                    url = '@Url.Action("GenerateUserAnalysis", "Admin")';
+                    title = 'User Analysis Report';
+                    break;
+                default:
+                    alert('Unknown report type');
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    return;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        currentReportData = response.data;
+                        displayReport(response.data, title);
+                        $('#reportModal').modal('show');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while generating the report');
+                },
+                complete: function() {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }
+            });
+        }
+
+        function displayReport(data, title) {
+            $('#reportModalLabel').text(title);
+            let content = '<div class="report-content">';
+            
+            if (data.Period) {
+                content += `<h6>Period: ${data.Period}</h6>`;
+            }
+            
+            content += '<div class="row">';
+            
+            // Display different data based on report type
+            if (data.NewUsers !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>New Users</h5>
+                                <h3 class="text-primary">${data.NewUsers}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if (data.CardsSent !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Cards Sent</h5>
+                                <h3 class="text-success">${data.CardsSent}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if (data.NewSubscriptions !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>New Subscriptions</h5>
+                                <h3 class="text-info">${data.NewSubscriptions}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if (data.Revenue !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Revenue</h5>
+                                <h3 class="text-warning">$${data.Revenue}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            if (data.TotalRevenue !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Total Revenue</h5>
+                                <h3 class="text-success">$${data.TotalRevenue}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            if (data.MonthlyRevenue !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Monthly Revenue</h5>
+                                <h3 class="text-info">$${data.MonthlyRevenue}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            if (data.TotalUsers !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Total Users</h5>
+                                <h3 class="text-primary">${data.TotalUsers}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            if (data.UsersWithSubscriptions !== undefined) {
+                content += `
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5>Subscribed Users</h5>
+                                <h3 class="text-success">${data.UsersWithSubscriptions}</h3>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            content += '</div>';
+
+            // Add detailed tables if available
+            if (data.RevenueByPlan) {
+                content += '<hr><h6>Revenue by Plan Type</h6>';
+                content += '<table class="table table-sm"><thead><tr><th>Plan Type</th><th>Count</th><th>Revenue</th></tr></thead><tbody>';
+                data.RevenueByPlan.forEach(item => {
+                    content += `<tr><td>${item.PlanType}</td><td>${item.Count}</td><td>$${item.Revenue}</td></tr>`;
+                });
+                content += '</tbody></table>';
+            }
+
+            if (data.UsersByRole) {
+                content += '<hr><h6>Users by Role</h6>';
+                content += '<table class="table table-sm"><thead><tr><th>Role</th><th>Count</th></tr></thead><tbody>';
+                data.UsersByRole.forEach(item => {
+                    content += `<tr><td>${item.Role}</td><td>${item.Count}</td></tr>`;
+                });
+                content += '</tbody></table>';
+            }
+
+            if (data.TopCardSenders) {
+                content += '<hr><h6>Top Card Senders</h6>';
+                content += '<table class="table table-sm"><thead><tr><th>User</th><th>Email</th><th>Cards Sent</th></tr></thead><tbody>';
+                data.TopCardSenders.forEach(item => {
+                    content += `<tr><td>${item.User}</td><td>${item.Email}</td><td>${item.CardsSent}</td></tr>`;
+                });
+                content += '</tbody></table>';
+            }
+            
+            content += `<p class="text-muted mt-3"><small>Generated at: ${data.GeneratedAt ? new Date(data.GeneratedAt).toLocaleString() : new Date().toLocaleString()}</small></p>`;
+            content += '</div>';
+            
+            $('#reportContent').html(content);
+        }
+
+        function downloadReport() {
+            if (currentReportData) {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentReportData, null, 2));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", `report_${new Date().getTime()}.json`);
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            } else {
+                alert('No report data available for download');
+            }
+        }
+    </script>
+}

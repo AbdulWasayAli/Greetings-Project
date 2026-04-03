@@ -1,0 +1,20 @@
+@use "sass:meta";
+:root {
+    --background-color: rgb(255, 255, 255);
+    --text-color: rgb(75, 85, 99);
+    --dark-background-color: rgb(15, 23, 42);
+    --dark-text-color: rgb(255, 255, 255);
+    --success-color: #10b981;
+    --info-color: #3b82f6;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --success-color-light: hsl(160deg, 70%, 90%);
+    --info-color-light: hsl(217deg, 69%, 90%);
+    --warning-color-light: hsl(33deg, 89%, 90%);
+    --error-color-light: hsl(0deg, 75%, 90%);
+}
+
+@include meta.load-css("wrapper");
+@include meta.load-css("container");
+@include meta.load-css("icons");
+@include meta.load-css("progress");

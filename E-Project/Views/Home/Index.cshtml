@@ -1,0 +1,646 @@
+﻿<!-- Hero Section with Background Video -->
+<section class="home" style="position:relative; width:100%; height:100vh; overflow:hidden;">
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline style="width:100%; height:100%; object-fit:cover;">
+        <source src="~/User/images/video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Dark Overlay -->
+    <div class="video-overlay"></div>
+
+    <!-- Overlay Text -->
+    <div class="overlay-text">
+        <h1>
+            <span style="color:#ffae00;">Welcome</span> to Greetings Cards ✨
+        </h1>
+        <p>
+            Create and customize your own cards, add anything you like, and share them with your loved ones instantly!
+        </p>
+        <a href="#categories" class="btn" id="getStartedBtn">Get Started</a>
+    </div>
+</section>
+
+<!-- Categories Section (scroll target) -->
+<section id="categories" style="min-height:100vh; padding:80px 20px; background:#f7f7f7;">
+    <!-- home content -->
+    @model IEnumerable<Category>
+
+    <div class="container py-5">
+        <header class="header">
+            <h1 class="text-center">Choose Your Greetings Categories</h1>
+        </header>
+
+        <!-- Search Error/Suggestions Section -->
+        @if (!string.IsNullOrEmpty(ViewBag.SearchError))
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert" data-aos="fade-down">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-search fa-2x text-info"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="alert-heading mb-2">
+                                    <i class="fas fa-spell-check"></i> Search Results for "@ViewBag.SearchTerm"
+                                </h5>
+                                <p class="mb-3">@ViewBag.SearchError</p>
+                                
+                                @if (ViewBag.SearchSuggestions != null && ((IEnumerable<Category>)ViewBag.SearchSuggestions).Any())
+                                {
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (Category suggestion in (IEnumerable<Category>)ViewBag.SearchSuggestions)
+                                        {
+                                            <a href="@Url.Action("Cards", new { id = suggestion.CategoryID })" 
+                                               class="btn btn-outline-info btn-sm rounded-pill">
+                                                <i class="fas fa-tag me-1"></i>@suggestion.CategoryName
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                                
+                                <hr class="my-3">
+                                <div class="text-muted small">
+                                    <strong>💡 Tip:</strong> Try searching for: Birthday, Wedding, Christmas, Diwali, New Year, Eid, or Thanksgiving
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <br><br><br>
+
+        <div class="row g-4">
+            @{
+                var index = 0;
+            }
+            @foreach (var cat in Model)
+            {
+                index++;
+                var delay = index * 100; // 1→100, 2→200 ... 8→800
+                                         <div class="col-md-3 col-sm-6" data-aos="zoom-in" data-aos-delay="@delay">
+                                             <a asp-action="Cards" asp-route-id="@cat.CategoryID" class="text-decoration-none text-dark">
+                                                 <div class="category-card">
+                                                     <img src="@cat.ImagePath" alt="@cat.CategoryName" />
+                                                     <h5><i>@cat.CategoryName</i></h5>
+                                                 </div>
+                                             </a>
+                                         </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript for Scroll -->
+<script>
+    document.getElementById("getStartedBtn").addEventListener("click", function (e) {
+        e.preventDefault(); // default # jump ko rokna
+        document.querySelector("#categories").scrollIntoView({
+            behavior: "smooth"
+        });
+    });
+</script>
+
+<!-- CSS -->
+<style>
+    /* Dark overlay */
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1;
+    }
+
+    /* Text Content */
+    .overlay-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #fff;
+        z-index: 2;
+        max-width: 700px;
+        padding: 20px;
+    }
+
+        .overlay-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+            opacity: 0;
+            animation: fadeInUp 1.2s ease forwards;
+        }
+
+        .overlay-text p {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 8px rgba(0,0,0,0.6);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        /* Button */
+        .overlay-text .btn {
+            background: linear-gradient(135deg, #ffae00, #ff4f91);
+            color: #fff;
+            padding: 14px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            animation: zoomIn 1.2s ease forwards;
+            animation-delay: 0.6s;
+        }
+
+            .overlay-text .btn:hover {
+                transform: scale(1.1);
+                background: linear-gradient(135deg, #ff4f91, #ffae00);
+            }
+
+    /* Keyframes */
+    @@keyframes fadeInUp {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    @@keyframes zoomIn {
+        0%
+
+    {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    }
+
+    /* Smooth Scroll */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .overlay-text h1
+
+    {
+        font-size: 2rem;
+    }
+
+    .overlay-text p {
+        font-size: 1rem;
+    }
+
+    .overlay-text .btn {
+        padding: 10px 25px;
+        font-size: 1rem;
+    }
+
+    }
+</style>
+
+
+ <div class="container py-5">
+     <header class="header" data-aos="zoom-in" data-aos-duration="700">
+   <h1 class="text-center">Special Trending Cards</h1>
+</header>
+ </div>
+<link rel="stylesheet" href="~/User/css/site.css" />
+<!-- Special Trending Cards -->
+<div class="wrap">
+    <!-- LEFT VISUAL -->
+    <div class="visual" data-aos="fade-right">
+        <div class="decor">
+            <div class="cards">
+                <div class="card card-a" style="background-image:url('/User/images/2tc.avif');" data-aos="zoom-in" data-aos-delay="200"></div>
+                <div class="card card-b" style="background-image:url('/User/images/1tc.avif');" data-aos="zoom-in" data-aos-delay="400"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel" data-aos="fade-left">
+        <h1 class="headline" data-aos="fade-up"><span class="accent">Make a wish</span> and<br>celebrate with style</h1>
+        <p class="lead" data-aos="fade-up" data-aos-delay="200">
+            Create beautiful birthday invites and cards in seconds — pick a style and customize text, colors, and images.
+        </p>
+        <div class="pill-list" data-aos="fade-up" data-aos-delay="400">
+            <a class="pill" asp-controller="Home" asp-action="Cards" asp-route-id="1">
+                <h4>Birthday cards</h4>
+                <div class="icon">✉</div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+        <style>
+            .pill {
+                background: var(--muted);
+                border-radius: 999px;
+                padding: 16px 22px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+                transition: all .2s ease;
+                text-decoration: none; /* underline hatao */
+                color: inherit; /* default text color */
+            }
+
+                .pill:hover {
+                    transform: translateX(6px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+                }
+
+                    /* sirf text ko yellow karo hover pe */
+                    .pill:hover h4 {
+                        color: black;
+                    }
+        </style>
+
+
+@* 
+    </div>
+</div> *@
+
+<!-- Wedding Cards Section -->
+<div class="wrap wedding-wrap">
+    <!-- LEFT VISUAL -->
+    <div class="visual" data-aos="fade-right">
+        <div class="decor wedding-decor">
+            <div class="cards">
+                <div class="card card-a" style="background-image:url('/User/images/3tc.avif');" data-aos="zoom-in" data-aos-delay="200"></div>
+                <div class="card card-b" style="background-image:url('/User/images/4tc.avif');" data-aos="zoom-in" data-aos-delay="400"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel" data-aos="fade-left">
+        <h1 class="headline" data-aos="fade-up">
+            <span class="wedding-accent">Forever Begins</span><br>
+            with your special day
+        </h1>
+        <p class="lead" data-aos="fade-up" data-aos-delay="200">
+            Design elegant wedding invitations and cards — choose from romantic templates with customizable text and colors.
+        </p>
+        <div class="pill-list" data-aos="fade-up" data-aos-delay="400">
+            <a class="pill wedding-pill" asp-controller="Home" asp-action="Cards" asp-route-id="2">
+                <h4>Wedding cards</h4>
+                <div class="icon">💍</div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Wedding theme colors */
+    :root {
+        --wedding-accent: #ff8f4f; /* light orange instead of deep pink */
+        --wedding-gold: #ffd700; /* keep gold or slightly warmer */
+        --wedding-bg: #fff7f0; /* very light orange / cream background */
+    }
+
+
+    /* Wedding Wrap */
+    .wedding-wrap {
+        margin-top: 80px; 
+        background: transparent;
+        border-radius: 20px;
+        box-shadow: none; 
+    }
+
+    /* Wedding Decor */
+    .wedding-decor {
+        background: var(--wedding-bg);
+    }
+
+        .wedding-decor::before {
+            border-color: var(--wedding-accent); /* deep pink */
+            animation: spin 14s linear infinite;
+        }
+
+
+        .wedding-decor::after {
+            border-color: var(--wedding-accent);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+    /* Headline Wedding Accent */
+    .headline .wedding-accent {
+        color: var(--wedding-accent);
+        font-family: "Playfair Display", serif;
+        font-size: 44px;
+        font-weight: bold;
+    }
+
+    /* Wedding pill (simple button like birthday) */
+    .wedding-pill {
+        background: var(--muted); 
+        border-radius: 999px;
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all .2s ease;
+        text-decoration: none; 
+        color: inherit; /* default text color */
+        outline: none; /* outline remove */
+        box-shadow: none; /* blue shadow remove */
+    }
+
+        .wedding-pill h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+    .wedding-pill {
+        background: rgba(255, 143, 79, 0.1); /* light transparent orange */
+    }
+
+
+       
+        .wedding-pill:hover {
+            transform: translateX(6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+            .wedding-pill:hover h4 {
+                color: black;
+            }
+</style>
+
+
+
+<!-- New Year Cards Section -->
+<div class="wrap newyear-wrap">
+    <!-- LEFT VISUAL -->
+    <div class="visual" data-aos="fade-right">
+        <div class="decor newyear-decor">
+            <div class="cards">
+                <div class="card card-a" style="background-image:url('/User/images/5tc.avif');" data-aos="zoom-in" data-aos-delay="200"></div>
+                <div class="card card-b" style="background-image:url('/User/images/6tc.avif');" data-aos="zoom-in" data-aos-delay="400"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel" data-aos="fade-left">
+        <h1 class="headline" data-aos="fade-up">
+            <span class="newyear-accent">Cheers to New Beginnings</span><br>
+            celebrate the joy of New Year
+        </h1>
+        <p class="lead" data-aos="fade-up" data-aos-delay="200">
+            Send festive and colorful New Year greetings — pick from sparkling designs and add your own wishes.
+        </p>
+        <div class="pill-list" data-aos="fade-up" data-aos-delay="400">
+            <a class="pill newyear-pill" asp-controller="Home" asp-action="Cards" asp-route-id="3">
+                <h4>New Year Cards</h4>
+                <div class="icon">🎉</div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 🎉 New Year theme colors */
+    :root {
+        --newyear-accent: #ffc800; /* ✅ golden accent for text */
+        --newyear-gold: #ffc800; /* ✅ golden rings */
+        --newyear-bg: #f5f9ff; /* light festive blue */
+    }
+
+    /* New Year Wrap */
+    .newyear-wrap {
+        margin-top: 80px;
+        background: transparent;
+        border-radius: 20px;
+        box-shadow: none;
+    }
+
+    /* New Year Decor */
+    .newyear-decor {
+        background: #fff4cc; /* light soft golden background */
+    }
+
+        .newyear-decor::before {
+            border-color: var(--newyear-gold); /* ✅ golden rings */
+            animation: spin 14s linear infinite;
+        }
+
+        .newyear-decor::after {
+            border-color: var(--newyear-gold); /* ✅ golden rings */
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+    /* Headline New Year Accent */
+    .headline .newyear-accent {
+        color: var(--newyear-accent); /* ✅ golden text */
+        font-family: "Playfair Display", serif;
+        font-size: 44px;
+        font-weight: bold;
+    }
+
+    /* New Year pill (button like birthday) */
+    .newyear-pill {
+        background: var(--muted);
+        border-radius: 999px;
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all .2s ease;
+        text-decoration: none;
+        color: inherit; /* text default color */
+        outline: none;
+        box-shadow: none;
+    }
+
+        .newyear-pill h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* ✅ Hover simple – no blue, no pink */
+        .newyear-pill:hover {
+            transform: translateX(6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+            .newyear-pill:hover h4 {
+                color: black; /* ✅ fix hover text to black */
+            }
+</style>
+<br>
+<br>
+   <!-- How it Works -->
+
+<br>
+<br>
+<!-- techtination -->
+<section class="section how1">
+  <div class="container">
+    <div class="row">
+      <section class="review-section">
+        
+        <h2 class="review-heading">See How Others Celebrate With Us</h2>
+         <p class="section-subtitle">Real love from,our happy users!</p>
+<br>
+<br>
+        <!-- Swiper Container -->
+        <div class="swiper reviewSwiper">
+          <div class="swiper-wrapper">
+
+            @if (ViewBag.RecentFeedbacks != null && ((IEnumerable<dynamic>)ViewBag.RecentFeedbacks).Any())
+            {
+                @foreach (var feedback in (IEnumerable<dynamic>)ViewBag.RecentFeedbacks)
+                {
+                    <div class="swiper-slide">
+                      <div class="review-card">
+                        <div class="stars">
+                          @for (int i = 0; i < feedback.Rating; i++)
+                          {
+                            <span>⭐</span>
+                          }
+                        </div>
+                        <h3>@feedback.UserName's Review</h3>
+                        <p>@feedback.ShortMessage</p>
+                        <div class="user">
+                          <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(feedback.UserName)&background=random&color=fff&size=64" class="avatar" alt="@feedback.UserName">
+                          <span>- @feedback.UserName, @feedback.TimeAgo</span>
+                        </div>
+                      </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Fallback static reviews if no feedback in database -->
+                <div class="swiper-slide">
+                  <div class="review-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <h3>Be the first to review!</h3>
+                    <p>No reviews yet. Share your experience with our e-card service!</p>
+                    <div class="user">
+                      <img src="https://ui-avatars.com/api/?name=Admin&background=007bff&color=fff&size=64" class="avatar" alt="Admin">
+                      <span>- E-Project Team</span>
+                    </div>
+                  </div>
+                </div>
+            }
+
+          </div>
+<!-- Arrows -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>  
+          <style>
+                        /* Swiper Navigation Buttons */
+                        .swiper-button-prev,
+                        .swiper-button-next {
+                            width: 48px;
+                            height: 48px;
+                            background: #ffae00; /* Pure Golden */
+                            border-radius: 50%;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transition: all 0.3s ease;
+                        }
+
+                            /* Default Arrow Icon */
+                            .swiper-button-prev::after,
+                            .swiper-button-next::after {
+                                font-size: 20px;
+                                color: #fff; /* White arrows */
+                                font-weight: bold;
+                            }
+
+                            /* Hover Effect */
+                            .swiper-button-prev:hover,
+                            .swiper-button-next:hover {
+                                transform: scale(1.15); /* thoda bada hover pe */
+                                background: #e09e00; /* darker golden shade */
+                                box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+                            }
+
+                                .swiper-button-prev:hover::after,
+                                .swiper-button-next:hover::after {
+                                    color: #fff; /* Arrow white hi rahega */
+                                }
+
+          </style>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<script>
+    // Auto-scroll to search suggestions when they appear
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if search suggestions are present
+        const searchAlert = document.querySelector('.alert-info[role="alert"]');
+        if (searchAlert) {
+            console.log('Search suggestions found, scrolling to them...');
+            
+            // Add a small delay to ensure the page is fully loaded
+            setTimeout(function() {
+                searchAlert.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                
+                // Optional: Add a subtle highlight effect
+                searchAlert.style.animation = 'pulse 1s ease-in-out';
+            }, 500);
+        }
+    });
+
+    // Add pulse animation if not already defined
+    if (!document.querySelector('style[data-search-scroll]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-search-scroll', 'true');
+        style.textContent = `
+            @@keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+</script>
+

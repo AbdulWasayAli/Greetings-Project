@@ -1,0 +1,101 @@
+.card-wrapper {
+    margin: 0;
+    min-height: 100vh; /* height: 100vh ki jagah min-height use karna better hai */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f2f2f2;
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap; /* multiple cards arrange honge */
+    gap: 20px;
+}
+
+/* Card container */
+.flip-card {
+    background: transparent;
+    width: 300px;
+    height: 350px;
+    perspective: 1000px; /* 3D effect */
+    margin: 20px auto;
+}
+
+/* Inner part for front & back */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+/* Flip on hover */
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front & Back common styles */
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+    /* Front = Only Image */
+    .flip-card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+/* Back design */
+.flip-card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgb(67, 0, 86);
+    color: #fff;
+    text-align: center;
+}
+
+    .flip-card-back h2 {
+        margin-bottom: 10px;
+    }
+
+    .flip-card-back p {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+.btn {
+    display: inline-block;
+    background: linear-gradient(135deg, rgb(67, 0, 86), rgb(255, 174, 0));
+    color: #fff !important;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+    .btn:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+        color: #fff !important;
+    }
+
+    .btn:focus,
+    .btn:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }

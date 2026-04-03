@@ -1,0 +1,111 @@
+﻿<!-- navbar -->
+<nav class="navbar navbar-expand-lg" id="navbar">
+    <div class="container-fluid">
+        <!-- Logo link -->
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index" id="logo">
+            <img src="~/User/images/logo.png" width="60px" alt="">
+            <span id="span1">G</span>reetin<span>gs</span>
+        </a>
+
+        <!-- Custom mobile menu toggle button (right side, only on mobile) -->
+        <button class="navbar-toggler d-lg-none ms-auto" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                style="border: none; background: transparent;">
+            <img src="~/User/images/menu.png" alt="Menu" width="30px">
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <!-- Home -->
+                <li class="nav-item">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+
+                <!-- Occasions Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Occasions
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="1">Birthday</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="2">Wedding</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="3">New Year</a></li>
+                    </ul>
+                </li>
+
+                <!-- Festivals Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Festivals
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: rgb(67 0 86);">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="4">Eid ul Fitr</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="5">Eid ul Adha</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="6">Christmas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="7">Thanksgiving</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Cards" asp-route-id="8">Diwali</a></li>
+                    </ul>
+                </li>
+
+                <!-- About -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                </li>
+
+                <!-- Contact -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
+                </li>
+
+                <!-- Subscribe -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Subscribe">Subscribe</a>
+                </li>
+
+                <!-- Feedback -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Feedback">Feedback</a>
+                </li>
+            </ul>
+            <form class="d-flex justify-content-center" asp-action="Index" method="get" style="max-width: 500px; margin: auto;">
+                <input name="search" class="form-control me-2"
+                       type="search" placeholder="Search Category"
+                       value="@Context.Request.Query["search"]">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+
+            <style>
+                /* Golden hover for inputs */
+                .form-control {
+                    transition: all 0.3s ease;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                    .form-control:hover,
+                    .form-control:focus {
+                        border: 2px solid #ffd700;
+                        box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.1);
+                        transform: translateY(-2px);
+                    }
+
+                /* Gradient button */
+                .btn-gradient {
+                    background: linear-gradient(135deg, rgb(67, 0, 86), rgb(255, 174, 0));
+                    border: none;
+                    transition: 0.4s;
+                }
+
+                    .btn-gradient:hover {
+                        background: linear-gradient(135deg, rgb(255, 174, 0), rgb(67, 0, 86));
+                        box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+                    }
+
+            </style>
+
+        </div>
+    </div>
+</nav>
+<!-- navbar -->

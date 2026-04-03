@@ -1,0 +1,314 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @if (ViewBag.HasActiveSubscription)
+            {
+                <div class="card shadow-lg p-4 rounded-4 border-0" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    <div class="text-center text-white">
+                        <h3 class="mb-3">✅ Pro Subscription Active!</h3>
+                        <p class="mb-3">You can send up to 10 emails per day</p>
+                        @{
+                            var subscription = ViewBag.CurrentSubscription as E_Project.Models.Subscription;
+                        }
+                        @if (subscription != null)
+                        {
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <h5>Plan</h5>
+                                    <p>@subscription.PlanType</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Expires</h5>
+                                    <p>@subscription.EndDate.ToString("MMM dd, yyyy")</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Days Left</h5>
+                                    <p>@subscription.DaysRemaining()</p>
+                                </div>
+                            </div>
+                        }
+                        <a href="@Url.Action("SendCard", "Home")" class="btn btn-light btn-lg mt-3">
+                            Start Sending Cards
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card shadow-lg p-4 rounded-4 border-0" style="background: #fff;">
+                    <h3 class="text-center mb-4" style="color: #007BFF;">Upgrade to Pro Subscription</h3>
+                    <p class="text-center text-muted mb-4">Send personalized e-cards to up to 10 people per day</p>
+
+                    <!-- Pro Plan Display -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h4 class="mb-0">Pro Plan</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <h2 class="text-primary mb-3">$9.99<small class="text-muted">/month</small></h2>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2">✅ Send up to 10 emails per day</li>
+                                <li class="mb-2">✅ Access to all card templates</li>
+                                <li class="mb-2">✅ High-quality card designs</li>
+                                <li class="mb-2">✅ Email delivery tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form id="subscribeForm" novalidate>
+                        <!-- Payment Section -->
+                        <h4 class="mb-3" style="color: #007BFF;">Payment Details</h4>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Payment Method</label>
+                            <select id="paymentMethod" name="PaymentMethod" class="form-select form-select-lg" onchange="togglePaymentFields()" required>
+                                <option value="" disabled selected hidden>Select Payment Method</option>
+                                <option value="Card">Debit / Credit Card</option>
+                                <option value="Bank">Bank Transfer</option>
+                                <option value="JazzCash">JazzCash</option>
+                                <option value="EasyPaisa">EasyPaisa</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a payment method</div>
+                        </div>
+
+                        <!-- Card Payment -->
+                        <div id="cardPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3" style="background: #f9f9f9;">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Card Holder Name</label>
+                                    <input type="text" id="cardHolder" class="form-control form-control-lg" placeholder="Enter card holder name" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" id="cardNumber" class="form-control form-control-lg number-only" placeholder="XXXX-XXXX-XXXX-XXXX" pattern="\d{13,16}" title="Only numbers allowed, 13-16 digits" />
+                                    <div class="invalid-feedback">Card Number is required (13-16 digits)</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Expiry</label>
+                                    <input type="text" id="expiryDate" class="form-control form-control-lg" placeholder="MM/YY" />
+                                    <div class="invalid-feedback">Expiry is required</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" id="cvv" class="form-control form-control-lg number-only" placeholder="***" pattern="\d{3,4}" title="Only numbers allowed, 3-4 digits" />
+                                    <div class="invalid-feedback">CVV is required (3-4 digits)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Transfer -->
+                        <div id="bankPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3" style="background: #f9f9f9;">
+                            <p class="text-muted mb-2">Transfer payment to our bank account:</p>
+                            <ul class="mb-2">
+                                <li>Bank: HBL</li>
+                                <li>Account Number: 123456789</li>
+                                <li>Account Title: E-Card Service</li>
+                            </ul>
+                            <input type="text" id="bankTransactionId" class="form-control form-control-lg number-only" placeholder="Enter Transaction ID" pattern="\d+" title="Only numbers allowed" />
+                            <div class="invalid-feedback">Transaction ID is required (numbers only)</div>
+                        </div>
+
+                        <!-- JazzCash -->
+                        <div id="jazzcashPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3" style="background: #f9f9f9;">
+                            <p class="text-muted mb-2">Send payment to JazzCash Number: <b>03001234567</b></p>
+                            <input type="text" id="jazzcashTransactionId" class="form-control form-control-lg number-only" placeholder="Enter JazzCash Transaction ID" pattern="\d+" title="Only numbers allowed" />
+                            <div class="invalid-feedback">Transaction ID is required (numbers only)</div>
+                        </div>
+
+                        <!-- EasyPaisa -->
+                        <div id="easypaisaPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3" style="background: #f9f9f9;">
+                            <p class="text-muted mb-2">Send payment to EasyPaisa Number: <b>03119876543</b></p>
+                            <input type="text" id="easypaisaTransactionId" class="form-control form-control-lg number-only" placeholder="Enter EasyPaisa Transaction ID" pattern="\d+" title="Only numbers allowed" />
+                            <div class="invalid-feedback">Transaction ID is required (numbers only)</div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg shadow-sm" id="purchaseBtn">
+                                <span id="btnText">Purchase Pro Subscription - $9.99</span>
+                                <span id="btnLoader" class="d-none">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Processing...
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Alert for success/error messages -->
+                        <div id="alertMessage" class="alert d-none mt-3" role="alert"></div>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePaymentFields() {
+        let method = document.getElementById("paymentMethod").value;
+        document.querySelectorAll(".payment-box").forEach(box => box.classList.add("d-none"));
+
+        if (method === "Card") document.getElementById("cardPayment").classList.remove("d-none");
+        if (method === "Bank") document.getElementById("bankPayment").classList.remove("d-none");
+        if (method === "JazzCash") document.getElementById("jazzcashPayment").classList.remove("d-none");
+        if (method === "EasyPaisa") document.getElementById("easypaisaPayment").classList.remove("d-none");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const subscribeForm = document.getElementById('subscribeForm');
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const alertMessage = document.getElementById('alertMessage');
+
+        // Card fields
+        const cardHolder = document.getElementById('cardHolder');
+        const cardNumber = document.getElementById('cardNumber');
+        const expiryDate = document.getElementById('expiryDate');
+        const cvv = document.getElementById('cvv');
+
+        // Other payment fields
+        const bankTransactionId = document.getElementById('bankTransactionId');
+        const jazzcashTransactionId = document.getElementById('jazzcashTransactionId');
+        const easypaisaTransactionId = document.getElementById('easypaisaTransactionId');
+
+        // Validation rules
+        if (cardHolder) cardHolder.addEventListener('input', () => validateField(cardHolder, /^[A-Za-z ]+$/.test(cardHolder.value)));
+        if (cardNumber) cardNumber.addEventListener('input', () => validateField(cardNumber, /^[0-9]{13,16}$/.test(cardNumber.value)));
+        if (expiryDate) expiryDate.addEventListener('input', () => validateField(expiryDate, /^[0-9]{1,4}$/.test(expiryDate.value)));
+        if (cvv) cvv.addEventListener('input', () => validateField(cvv, /^[0-9]{3,4}$/.test(cvv.value)));
+
+        if (bankTransactionId) bankTransactionId.addEventListener('input', () => validateField(bankTransactionId, /^[0-9]{1,9}$/.test(bankTransactionId.value)));
+        if (jazzcashTransactionId) jazzcashTransactionId.addEventListener('input', () => validateField(jazzcashTransactionId, /^[0-9]{11}$/.test(jazzcashTransactionId.value)));
+        if (easypaisaTransactionId) easypaisaTransactionId.addEventListener('input', () => validateField(easypaisaTransactionId, /^[0-9]{11}$/.test(easypaisaTransactionId.value)));
+
+        function validateField(input, isValid) {
+            input.classList.remove('is-valid', 'is-invalid');
+            if (input.value !== '') {
+                input.classList.add(isValid ? 'is-valid' : 'is-invalid');
+            }
+        }
+
+        // FORM SUBMIT
+        if (subscribeForm) {
+            subscribeForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                if (!paymentMethod) {
+                    showAlert('Please select a payment method', 'danger');
+                    return;
+                }
+
+                // CARD validation
+                if (paymentMethod === "Card") {
+                    if (!cardHolder.classList.contains('is-valid') ||
+                        !cardNumber.classList.contains('is-valid') ||
+                        !expiryDate.classList.contains('is-valid') ||
+                        !cvv.classList.contains('is-valid')) {
+                        showAlert('Please fill all card details correctly.', 'danger');
+                        return;
+                    }
+                }
+
+                // BANK validation
+                if (paymentMethod === "Bank") {
+                    if (!bankTransactionId.classList.contains('is-valid')) {
+                        showAlert('Please enter a valid Bank Transaction ID (1–9 digits).', 'danger');
+                        return;
+                    }
+                }
+
+                // JazzCash validation
+                if (paymentMethod === "JazzCash") {
+                    if (!jazzcashTransactionId.classList.contains('is-valid')) {
+                        showAlert('Please enter a valid JazzCash number (11 digits).', 'danger');
+                        return;
+                    }
+                }
+
+                // EasyPaisa validation
+                if (paymentMethod === "EasyPaisa") {
+                    if (!easypaisaTransactionId.classList.contains('is-valid')) {
+                        showAlert('Please enter a valid EasyPaisa number (11 digits).', 'danger');
+                        return;
+                    }
+                }
+
+                // Show loading
+                btnText.classList.add('d-none');
+                btnLoader.classList.remove('d-none');
+                purchaseBtn.disabled = true;
+
+                try {
+                    const requestData = {
+                        paymentMethod: paymentMethod,
+                        cardNumber: cardNumber?.value || '',
+                        cardHolder: cardHolder?.value || '',
+                        expiryDate: expiryDate?.value || '',
+                        cvv: cvv?.value || '',
+                        bankTransactionId: bankTransactionId?.value || '',
+                        jazzcashTransactionId: jazzcashTransactionId?.value || '',
+                        easypaisaTransactionId: easypaisaTransactionId?.value || ''
+                    };
+
+                    const response = await fetch('/Home/PurchaseSubscription', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert(result.message, 'success');
+                        setTimeout(() => window.location.reload(), 2000);
+                    } else {
+                        showAlert(result.message || 'Error processing subscription', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('Network error occurred. Please try again.', 'danger');
+                } finally {
+                    btnText.classList.remove('d-none');
+                    btnLoader.classList.add('d-none');
+                    purchaseBtn.disabled = false;
+                }
+            });
+        }
+
+        function showAlert(message, type) {
+            alertMessage.className = `alert alert-${type}`;
+            alertMessage.textContent = message;
+            alertMessage.classList.remove('d-none');
+
+            if (type === 'success') {
+                setTimeout(() => alertMessage.classList.add('d-none'), 5000);
+            }
+        }
+    });
+</script>
+
+
+
+<style>
+    /* Red/green border for real-time validation */
+    input.is-valid, select.is-valid {
+        border-color: #28a745 !important;
+    }
+
+    input.is-invalid, select.is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .was-validated .form-control:invalid,
+    .was-validated .form-select:invalid {
+        border-color: #dc3545;
+    }
+
+    .was-validated .form-control:valid,
+    .was-validated .form-select:valid {
+        border-color: #28a745;
+    }
+</style>

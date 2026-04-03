@@ -1,0 +1,1068 @@
+﻿@model IEnumerable<Card>
+<header class="header" data-aos="zoom-in" data-aos-duration="700">
+    <h1 class="text-center">
+        @ViewBag.CategoryName.ToUpper()<span style="margin-left:20px;">GREETINGS</span>
+    </h1>
+</header>
+@* <h2>@ViewBag.CategoryName Cards</h2> *@
+<div class="container">
+    <div class="row">
+        @foreach (var card in Model)
+        {
+            <div class="flip-card col-md-3 col-sm-6">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front" data-aos="zoom-in" data-aos-delay="100">
+                        <img src="@card.MediaPath" alt="Card Image" />
+                    </div>
+                    <div class="flip-card-back">
+                        <h5><b>@card.Title</b></h5>
+                        <br>
+                        <p><i>@card.Message</i></p>
+                        <a class="btn"
+                           onclick="openCustomize('@card.MediaPath','@card.Title','@card.Message')">
+                            Customize
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<!-- Customize Modal -->
+<div class="modal fade" id="customizeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Customize Your Card</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body row">
+
+                <!-- Left: Selected Image -->
+                <div class="col-md-6 text-center">
+                    <img id="previewImage" src="" class="img-fluid rounded shadow">
+                </div>
+
+                <!-- Right: Options -->
+                <div class="col-md-6">
+                    <!-- Upload Image -->
+                    <label class="form-label">Change Image</label>
+                    <div id="dragDropZone" class="drag-drop-zone mb-3"
+                         ondrop="handleDrop(event)"
+                         ondragover="handleDragOver(event)"
+                         ondragleave="handleDragLeave(event)"
+                         ondragenter="handleDragEnter(event)">
+                        <div class="drag-drop-content">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                            <p class="mb-1">Drag & drop image here</p>
+                            <p class="text-muted small mb-2">or</p>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('imageFile').click()">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hidden file input -->
+                    <input type="file" id="imageFile" class="d-none" accept="image/*">
+
+                    <!-- Clear Custom Image Button (only show when custom image exists) -->
+                    <button type="button" id="clearCustomImageBtn" class="btn btn-outline-warning btn-sm mb-3 d-none" 
+                            onclick="clearCustomImageAndRefresh()">
+                        <i class="fas fa-undo"></i> Use Template Instead
+                    </button>
+
+                    <!-- Change Title -->
+                    <label class="form-label">Card Title</label>
+                    <input type="text" id="cardTitle" class="form-control mb-3" value="Happy Birthday 🎂✨">
+
+                    <!-- Change Description -->
+                    <label class="form-label">Card Message</label>
+                    <textarea id="cardMessage" class="form-control mb-3" rows="3">Wishing you a day filled with love & joy!</textarea>
+
+                    <!-- Next Button -->
+                    <button class="btn btn-primary w-100"
+                            onclick="handleSaveAndContinue()">
+                        Save & Continue
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================== SUBSCRIBE MODAL ================== -->
+<div class="modal fade" id="subscribeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header">
+                <h5 class="modal-title">Subscribe to Daily E-Card Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- yahan padding add ki -->
+            <div class="modal-body p-4">
+                <form id="subscribeForm" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <!-- User Info -->
+                    <div class="row g-4">
+                        <!-- g-4 spacing between fields -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Full Name</label>
+                            <input type="text" name="Name" class="form-control form-control-lg"
+                                   placeholder="Enter your name" required pattern="[A-Za-z\s]+">
+                            <div class="invalid-feedback">Full Name is required (letters only)</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" name="Email" class="form-control form-control-lg"
+                                   placeholder="Enter your email" required>
+                            <div class="invalid-feedback">Valid Email is required</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Password</label>
+                            <input type="password" name="Password" class="form-control form-control-lg"
+                                   placeholder="Enter password" required minlength="6">
+                            <div class="invalid-feedback">Password is required (min 6 chars)</div>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Plan -->
+                    <div class="mt-4">
+                        <label class="form-label fw-bold">Subscription Plan</label>
+                        <select name="Plan" class="form-select form-select-lg" required>
+                            <option value="" disabled selected hidden>Select Plan</option>
+                            <option value="monthly">Monthly - $9.99</option>
+                            <option value="yearly">Yearly - $99.99</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a plan</div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Payment Section -->
+                    <h4 class="mb-3 text-primary">Payment Details</h4>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Payment Method</label>
+                        <select id="paymentMethod" class="form-select form-select-lg"
+                                onchange="togglePaymentFields()" required>
+                            <option value="" disabled selected hidden>Select Payment Method</option>
+                            <option value="card">Debit / Credit Card</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="jazzcash">JazzCash</option>
+                            <option value="easypaisa">EasyPaisa</option>
+                        </select>
+                        <div class="invalid-feedback">Select a payment method</div>
+                    </div>
+
+                    <!-- Card Payment -->
+                    <div id="cardPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" class="form-control number-only"
+                                       placeholder="XXXX-XXXX-XXXX-XXXX" pattern="\d{13,16}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Expiry</label>
+                                <input type="text" class="form-control" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control number-only" placeholder="***"
+                                       pattern="\d{3,4}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer -->
+                    <div id="bankPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3">
+                        <p class="text-muted">Transfer to HBL - Acc: 123456789</p>
+                        <input type="text" class="form-control number-only" placeholder="Enter Transaction ID">
+                    </div>
+
+                    <!-- JazzCash -->
+                    <div id="jazzcashPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3">
+                        <p class="text-muted">Send to JazzCash: <b>0300-1234567</b></p>
+                        <input type="text" class="form-control number-only" placeholder="Enter Transaction ID">
+                    </div>
+
+                    <!-- Easypaisa -->
+                    <div id="easypaisaPayment" class="payment-box d-none p-3 border rounded-3 shadow-sm mb-3">
+                        <p class="text-muted">Send to EasyPaisa: <b>0311-9876543</b></p>
+                        <input type="text" class="form-control number-only" placeholder="Enter Transaction ID">
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Complete Subscription</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ================== EMAILS MODAL ================== -->
+<div class="modal fade" id="emailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Recipient Emails (Max 10)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="emailsForm" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div id="emailsContainer">
+                        <div class="input-group mb-2 email-field">
+                            <input type="email" name="emails[]" class="form-control" placeholder="Enter email" required>
+                            <button type="button" class="btn btn-outline-danger d-none" onclick="removeEmailField(this)">Remove</button>
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
+                    </div>
+
+                    <!-- Add Email Button -->
+                    <button type="button" id="addEmailBtn"
+                            class="btn btn-sm btn-outline-primary mt-3 mb-3"
+                            onclick="addEmailField()">
+                        + Add Email
+                    </button>
+
+                    <hr />
+
+                    <!-- Save Button inside modal-body -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg w-100">Send Emails</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =============== SCRIPTS =============== -->
+<script>
+    // Global variables and functions defined first
+    let selectedTemplate = "birthday"; // default template
+    let customImageDataUrl = "";
+    
+    // Also set on window object for global access
+    window.selectedTemplate = selectedTemplate;
+    window.customImageDataUrl = customImageDataUrl;
+    
+    // Function to clear custom image and reset to template
+    function clearCustomImage() {
+        console.log("🧹 Clearing custom image...");
+        customImageDataUrl = "";
+        window.customImageDataUrl = "";
+        selectedTemplate = "birthday"; // Reset to default template
+        window.selectedTemplate = "birthday";
+        
+        // Clear file input
+        const fileInput = document.getElementById('imageFile');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        console.log("✅ Custom image cleared");
+    }
+    
+    // Function to clear custom image and refresh preview with template
+    function clearCustomImageAndRefresh() {
+        console.log("🧹 Clearing custom image and refreshing...");
+        
+        // Clear custom image data
+        clearCustomImage();
+        
+        // Reset preview to a default template image
+        const defaultImagePath = "/User/images/1c.jpg"; // Default birthday template
+        document.getElementById("previewImage").src = defaultImagePath;
+        
+        // Hide the clear button
+        document.getElementById("clearCustomImageBtn").classList.add("d-none");
+        
+        console.log("✅ Custom image cleared and preview refreshed to template");
+    }
+    
+    // Function to clear custom image and refresh modal with template
+    function clearCustomImageAndRefresh() {
+        clearCustomImage();
+        
+        // Get the current card data and refresh modal with template image
+        const cardTitle = document.getElementById("cardTitle").value;
+        const cardMessage = document.getElementById("cardMessage").value;
+        
+        // Close current modal
+        bootstrap.Modal.getInstance(document.getElementById("customizeModal")).hide();
+        
+        // Reopen with template (default birthday)
+        setTimeout(() => {
+            const defaultImagePath = "/User/images/1c.jpg"; // Default birthday template
+            openCustomize(defaultImagePath, cardTitle, cardMessage);
+        }, 300);
+    }
+    
+    // Simple test function to verify JavaScript is working
+    function testFunction() {
+        console.log("🧪 TEST FUNCTION WORKING!");
+        window.testFunctionWorking = true;
+        return "TEST OK";
+    }
+    
+    // Make test function global
+    window.testFunction = testFunction;
+    
+    // Update image upload handling to set custom image data - DEFINED FIRST
+    function updateImageFromFile(eventOrFile) {
+        try {
+            console.log("🔥🔥🔥 IMMEDIATE FUNCTION ENTRY TEST 🔥🔥🔥");
+            console.log("🔥 FUNCTION ENTRY - updateImageFromFile");
+            console.log("🔥 Arguments received:", arguments.length);
+            console.log("🔥 First argument:", eventOrFile);
+            console.log("🔥 Event target:", eventOrFile ? eventOrFile.target : "no target");
+            console.log("🔥 Event target files:", eventOrFile && eventOrFile.target ? eventOrFile.target.files : "no files");
+            
+            // Immediate test - set something in window
+            window.testCustomImage = "TEST_VALUE_" + Date.now();
+            console.log("🔥 Test value set:", window.testCustomImage);
+            
+            // Also set a persistent test flag
+            window.imageUploadAttempted = true;
+            window.imageUploadTimestamp = Date.now();
+            console.log("🔥 Upload attempt flags set:", window.imageUploadAttempted, window.imageUploadTimestamp);
+        } catch (immediateError) {
+            console.error("❌ IMMEDIATE ERROR in updateImageFromFile:", immediateError);
+            console.error("❌ Error details:", immediateError.message, immediateError.stack);
+            return;
+        }
+        
+        console.log("🔥 About to enter main try block...");
+        
+        try {
+            // Call test function to verify JavaScript is working
+            console.log("🧪 Calling test function:", testFunction());
+        } catch (testError) {
+            console.error("❌ Test function failed:", testError);
+        }
+        
+        try {
+            console.log("=== updateImageFromFile START ===");
+            console.log("updateImageFromFile called with:", eventOrFile);
+            console.log("Event type:", typeof eventOrFile);
+            
+            const input = document.getElementById('imageFile');
+            console.log("Input element found:", !!input);
+            console.log("Input files:", input ? input.files : "no input");
+            console.log("Input files length:", input && input.files ? input.files.length : "no length");
+            
+            let selectedFile;
+            
+            console.log("🔍 File selection logic starting...");
+            console.log("🔍 eventOrFile exists:", !!eventOrFile);
+            console.log("🔍 eventOrFile.target exists:", !!(eventOrFile && eventOrFile.target));
+            console.log("🔍 eventOrFile.target.files exists:", !!(eventOrFile && eventOrFile.target && eventOrFile.target.files));
+            
+            // Handle both event object and direct file parameter
+            if (eventOrFile && eventOrFile.target && eventOrFile.target.files) {
+                // Event object from onchange
+                selectedFile = eventOrFile.target.files[0];
+                console.log("✅ Selected file from event.target.files:", selectedFile);
+                console.log("✅ File details:", selectedFile ? {name: selectedFile.name, size: selectedFile.size, type: selectedFile.type} : "null");
+            } else if (eventOrFile && typeof eventOrFile === 'object' && eventOrFile.size) {
+                // Direct file object
+                selectedFile = eventOrFile;
+                console.log("✅ Selected file from direct parameter:", selectedFile);
+            } else {
+                // Fallback: get file from input element
+                selectedFile = input && input.files ? input.files[0] : null;
+                console.log("✅ Selected file from input element:", selectedFile);
+                console.log("✅ Fallback file details:", selectedFile ? {name: selectedFile.name, size: selectedFile.size, type: selectedFile.type} : "null");
+            }
+            
+            console.log("🔍 Final selectedFile:", selectedFile);
+            
+            if (selectedFile) {
+                console.log("📁 Processing file:");
+                console.log("- Name:", selectedFile.name);
+                console.log("- Type:", selectedFile.type);
+                console.log("- Size:", selectedFile.size);
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        console.log("📖 FileReader onload triggered - CALLBACK EXECUTING!");
+                        console.log("🔥 About to set global variables");
+                        console.log("🔥 Current selectedTemplate:", selectedTemplate);
+                        console.log("🔥 Current customImageDataUrl length:", customImageDataUrl ? customImageDataUrl.length : 0);
+                        console.log("🔥 FileReader result length:", e.target.result ? e.target.result.length : 0);
+                        
+                        // Set custom image data and update template selection
+                        const imageData = e.target.result;
+                        
+                        // Force variables to global scope
+                        window.customImageDataUrl = imageData;
+                        window.selectedTemplate = "custom";
+                        
+                        // Also set local variables
+                        customImageDataUrl = imageData;
+                        selectedTemplate = "custom";
+                        
+                        // Force global assignment using different approach
+                        globalThis.customImageDataUrl = imageData;
+                        globalThis.selectedTemplate = "custom";
+                        
+                        console.log("🔥 After setting - selectedTemplate:", selectedTemplate);
+                        console.log("🔥 After setting - window.selectedTemplate:", window.selectedTemplate);
+                        console.log("🔥 After setting - globalThis.selectedTemplate:", globalThis.selectedTemplate);
+                        console.log("🔥 After setting - customImageDataUrl length:", customImageDataUrl ? customImageDataUrl.length : 0);
+                        console.log("🔥 After setting - window.customImageDataUrl length:", window.customImageDataUrl ? window.customImageDataUrl.length : 0);
+                        console.log("🔥 After setting - globalThis.customImageDataUrl length:", globalThis.customImageDataUrl ? globalThis.customImageDataUrl.length : 0);
+                        
+                        // Store in multiple ways for persistence
+                        try {
+                            sessionStorage.setItem('customImageData', imageData);
+                            sessionStorage.setItem('selectedTemplate', 'custom');
+                            console.log("🔥 Stored in sessionStorage as backup");
+                        } catch (storageError) {
+                            console.warn("⚠️ Could not store in sessionStorage:", storageError);
+                        }
+                        
+                        // Double-check the assignment worked
+                        if (!window.selectedTemplate || !window.customImageDataUrl) {
+                            console.error("❌ Window variables not set properly, trying again...");
+                            window.selectedTemplate = "custom";
+                            window.customImageDataUrl = imageData;
+                            selectedTemplate = "custom";
+                            customImageDataUrl = imageData;
+                            console.log("🔥 Retry - window.selectedTemplate:", window.selectedTemplate);
+                            console.log("🔥 Retry - window.customImageDataUrl length:", window.customImageDataUrl ? window.customImageDataUrl.length : 0);
+                        }
+                        
+                        const previewImg = document.getElementById('previewImage');
+                        if (previewImg) {
+                            previewImg.src = customImageDataUrl;
+                            console.log("🖼️ Preview image updated");
+                        } else {
+                            console.error("❌ Preview image element not found");
+                        }
+                        
+                        // Show the clear custom image button
+                        const clearBtn = document.getElementById("clearCustomImageBtn");
+                        if (clearBtn) {
+                            clearBtn.classList.remove("d-none");
+                        }
+                        
+                        console.log("✅ Custom image uploaded successfully!");
+                        console.log("- selectedTemplate set to:", selectedTemplate);
+                        console.log("- customImageDataUrl length:", customImageDataUrl.length);
+                        
+                        // Final verification
+                        console.log("🔍 FINAL VERIFICATION:");
+                        console.log("- selectedTemplate === 'custom':", selectedTemplate === 'custom');
+                        console.log("- window.selectedTemplate === 'custom':", window.selectedTemplate === 'custom');
+                        console.log("- customImageDataUrl exists:", !!customImageDataUrl);
+                        console.log("- window.customImageDataUrl exists:", !!window.customImageDataUrl);
+                        console.log("=== updateImageFromFile SUCCESS ===");
+                    } catch (error) {
+                        console.error("❌ Error in FileReader onload:", error);
+                    }
+                };
+                
+                reader.onerror = function(error) {
+                    console.error("❌ FileReader error:", error);
+                };
+                
+                console.log("🔥 About to call reader.readAsDataURL...");
+                reader.readAsDataURL(selectedFile);
+                console.log("🔥 reader.readAsDataURL called - waiting for onload callback...");
+                
+                // Add a timeout to check if callback executed
+                setTimeout(() => {
+                    console.log("🔥 TIMEOUT CHECK (1 second later):");
+                    console.log("- window.selectedTemplate:", window.selectedTemplate);
+                    console.log("- window.customImageDataUrl exists:", !!window.customImageDataUrl);
+                    console.log("- window.customImageDataUrl length:", window.customImageDataUrl ? window.customImageDataUrl.length : 0);
+                    console.log("- window.testCustomImage:", window.testCustomImage);
+                }, 1000);
+            } else {
+                console.log("❌ No file selected or file is null");
+                console.log("=== updateImageFromFile END (NO FILE) ===");
+            }
+        } catch (error) {
+            console.error("❌ Error in updateImageFromFile:", error);
+            console.error("❌ Error stack:", error.stack);
+            console.error("❌ Error details:", {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+        }
+    }
+
+    // Make updateImageFromFile globally accessible
+    window.updateImageFromFile = updateImageFromFile;
+    console.log("🔥 updateImageFromFile assigned to window:", typeof window.updateImageFromFile);
+
+    // Add event listener for file input
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("Setting up file input event listener");
+        const fileInput = document.getElementById('imageFile');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(event) {
+                console.log('File input changed via event listener!');
+                console.log('Event:', event);
+                console.log('Files:', event.target.files);
+                try {
+                    console.log('Calling updateImageFromFile from event listener...');
+                    console.log('Function exists:', typeof updateImageFromFile);
+                    console.log('Window function exists:', typeof window.updateImageFromFile);
+                    
+                    // Try both local and window versions
+                    if (typeof updateImageFromFile === 'function') {
+                        console.log('🔥 Using local updateImageFromFile...');
+                        updateImageFromFile(event);
+                    } else if (typeof window.updateImageFromFile === 'function') {
+                        console.log('🔥 Using window.updateImageFromFile...');
+                        window.updateImageFromFile(event);
+                    } else {
+                        console.error('❌ updateImageFromFile function not found in any scope!');
+                    }
+                    console.log('updateImageFromFile call completed from event listener');
+                } catch(error) {
+                    console.error('Error calling updateImageFromFile from event listener:', error);
+                    console.error('Error stack:', error.stack);
+                }
+            });
+            console.log("File input event listener added successfully");
+        } else {
+            console.error("File input element not found!");
+        }
+        
+        // Test the function directly
+        console.log("🧪 Testing updateImageFromFile function directly...");
+        try {
+            console.log("🧪 Function type:", typeof updateImageFromFile);
+            console.log("🧪 Window function type:", typeof window.updateImageFromFile);
+            // Don't call with null - just test that it's callable
+            console.log("🧪 Function test completed");
+        } catch (directTestError) {
+            console.error("❌ Direct function test failed:", directTestError);
+        }
+    });
+
+    // Check subscription status and handle Save & Continue button
+    function handleSaveAndContinue() {
+        const isLoggedIn = @ViewBag.IsLoggedIn.ToString().ToLower();
+        const hasActiveSubscription = @ViewBag.HasActiveSubscription.ToString().ToLower();
+        
+        // Close customize modal first
+        bootstrap.Modal.getInstance(document.getElementById("customizeModal")).hide();
+        
+        if (!isLoggedIn) {
+            // User not logged in - show login message
+            alert("Please login first to send cards!");
+            window.location.href = "/Home/Login";
+            return;
+        }
+        
+        if (hasActiveSubscription) {
+            // User has active subscription - go directly to emails modal
+            new bootstrap.Modal(document.getElementById("emailsModal")).show();
+        } else {
+            // User doesn't have subscription - show subscription modal
+            new bootstrap.Modal(document.getElementById("subscribeModal")).show();
+        }
+    }
+
+
+
+    // Image drag and drop functions
+    function handleDragOver(event) {
+        event.preventDefault();
+        document.getElementById('dragDropZone').classList.add('drag-over');
+    }
+
+    function handleDragLeave(event) {
+        document.getElementById('dragDropZone').classList.remove('drag-over');
+    }
+
+    function handleDragEnter(event) {
+        event.preventDefault();
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        document.getElementById('dragDropZone').classList.remove('drag-over');
+        const files = event.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            updateImageFromFile(files[0]);
+        }
+    }
+
+    function togglePaymentFields() {
+      let method = document.getElementById("paymentMethod").value;
+      document.querySelectorAll(".payment-box").forEach(b => b.classList.add("d-none"));
+      if(method==="card") document.getElementById("cardPayment").classList.remove("d-none");
+      if(method==="bank") document.getElementById("bankPayment").classList.remove("d-none");
+      if(method==="jazzcash") document.getElementById("jazzcashPayment").classList.remove("d-none");
+      if(method==="easypaisa") document.getElementById("easypaisaPayment").classList.remove("d-none");
+    }
+
+    // Bootstrap Validation + Modal Switch
+    document.addEventListener("DOMContentLoaded", function(){
+      const subscribeForm = document.getElementById("subscribeForm");
+      subscribeForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        
+        if(!subscribeForm.checkValidity()){
+          e.stopPropagation();
+          subscribeForm.classList.add("was-validated");
+          return;
+        }
+        
+        // Show loading state
+        const submitBtn = subscribeForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+        
+        // Collect form data
+        const formData = new FormData(subscribeForm);
+        
+        // Collect payment data based on selected method
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        let subscriptionData = {
+          PaymentMethod: paymentMethod || 'Card',
+          CardNumber: '',
+          CardHolder: '',
+          ExpiryDate: '',
+          CVV: ''
+        };
+        
+        // Get payment details based on method
+        if (paymentMethod === 'card') {
+          const cardPayment = document.getElementById('cardPayment');
+          subscriptionData.CardNumber = cardPayment.querySelector('input[placeholder*="XXXX-XXXX"]')?.value || '';
+          subscriptionData.ExpiryDate = cardPayment.querySelector('input[placeholder="MM/YY"]')?.value || '';
+          subscriptionData.CVV = cardPayment.querySelector('input[placeholder="***"]')?.value || '';
+          subscriptionData.CardHolder = formData.get('Name') || '';
+        }
+        
+        // Send subscription request
+        fetch('/Home/PurchaseSubscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(subscriptionData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ Subscription successful! You can now send cards.");
+            bootstrap.Modal.getInstance(document.getElementById("subscribeModal")).hide();
+            // Update page state
+            window.location.reload(); // Refresh to update subscription status
+          } else {
+            alert("❌ " + (data.message || "Subscription failed. Please try again."));
+          }
+        })
+        .catch(err => {
+          console.error("Subscription error:", err);
+          alert("❌ Network error. Please try again.");
+        })
+        .finally(() => {
+          // Restore button state
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
+        
+        subscribeForm.classList.add("was-validated");
+      });
+    });
+
+    // Add more emails (max 10)
+    function addEmailField(){
+      let container = document.getElementById("emailsContainer");
+      if(container.querySelectorAll("input").length >= 10) return;
+      let div = document.createElement("div");
+      div.className="input-group mb-2";
+      div.innerHTML = `<input type="email" name="emails[]" class="form-control" placeholder="Enter email" required>`;
+      container.appendChild(div);
+    }
+
+    // Allow only numbers
+    document.addEventListener("input", function(e){
+      if(e.target.classList.contains("number-only")){
+        e.target.value = e.target.value.replace(/\D/g,"");
+      }
+    });
+
+        function addEmailField() {
+      const container = document.getElementById("emailsContainer");
+      const emailFields = container.querySelectorAll(".email-field");
+
+      if (emailFields.length >= 10) return; // max 10
+
+      const div = document.createElement("div");
+      div.classList.add("input-group", "mb-2", "email-field");
+      div.innerHTML = `
+        <input type="email" name="emails[]" class="form-control" placeholder="Enter email" required>
+        <button type="button" class="btn btn-outline-danger" onclick="removeEmailField(this)">Remove</button>
+        <div class="invalid-feedback">Please enter a valid email address</div>
+      `;
+      container.appendChild(div);
+
+      // Hide add button if 10 reached
+      if (container.querySelectorAll(".email-field").length >= 10) {
+        document.getElementById("addEmailBtn").classList.add("d-none");
+      }
+    }
+
+    function removeEmailField(button) {
+      const container = document.getElementById("emailsContainer");
+      button.parentElement.remove();
+
+      // Show add button again if < 10
+      if (container.querySelectorAll(".email-field").length < 10) {
+        document.getElementById("addEmailBtn").classList.remove("d-none");
+      }
+    }
+
+    // Form validation - removed duplicate event listener
+
+</script>
+
+<style>
+    /* Green/red borders */
+    .was-validated .form-control:invalid, .was-validated .form-select:invalid {
+        border-color: #dc3545;
+    }
+
+    .was-validated .form-control:valid, .was-validated .form-select:valid {
+        border-color: #28a745;
+    }
+
+    #emailsModal .modal-body {
+        overflow-x: hidden; /* right/left overflow cut ho jayega */
+        padding: 1.5rem; /* thoda andar jagah de deta hai */
+    }
+
+    #emailsModal .btn-success {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0; /* extra margin remove */
+    }
+
+    #emailsModal #addEmailBtn {
+        margin-top: 0.75rem; /* input se gap dega */
+        margin-bottom: 1rem; /* neeche bhi thoda space */
+    }
+
+    /* Drag and drop zone styling */
+    .drag-drop-zone {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .drag-drop-zone.drag-over {
+        border-color: #007bff;
+        background-color: #f8f9ff;
+    }
+
+    .drag-drop-zone:hover {
+        border-color: #007bff;
+        background-color: #f8f9ff;
+    }
+
+
+</style>
+
+
+        <script>
+    // Debug: Check if function exists when page loads
+    console.log("=== CARDS.CSHTML SCRIPT LOADED ===");
+    console.log("updateImageFromFile function exists:", typeof updateImageFromFile);
+    
+    // Test function to manually check file input
+    window.testFileInput = function() {
+        console.log("=== MANUAL FILE INPUT TEST ===");
+        const input = document.getElementById('imageFile');
+        console.log("Input element:", input);
+        console.log("Input files:", input ? input.files : "no input");
+        if (input && input.files && input.files.length > 0) {
+            console.log("File found:", input.files[0]);
+            updateImageFromFile({ target: { files: input.files } });
+        } else {
+            console.log("No files in input");
+        }
+    };
+
+    // Update openCustomize function to set the selected template correctly
+    function openCustomize(imagePath, title, message) {
+        console.log("🚀 openCustomize called with:");
+        console.log("  - imagePath:", imagePath);
+        console.log("  - title:", title);
+        console.log("  - message:", message);
+        
+        // Check both local and window variables for custom image
+        const hasCustomImage = (customImageDataUrl && customImageDataUrl.length > 0) || 
+                              (window.customImageDataUrl && window.customImageDataUrl.length > 0);
+        
+        console.log("Checking for custom image:");
+        console.log("- customImageDataUrl:", !!customImageDataUrl, customImageDataUrl ? customImageDataUrl.length : 0);
+        console.log("- window.customImageDataUrl:", !!window.customImageDataUrl, window.customImageDataUrl ? window.customImageDataUrl.length : 0);
+        console.log("- hasCustomImage:", !!hasCustomImage);
+        
+        // If we have a custom image, preserve it and set template to custom
+        if (hasCustomImage) {
+            // Keep the custom image and template - restore from window if needed
+            selectedTemplate = "custom";
+            window.selectedTemplate = "custom";
+            customImageDataUrl = customImageDataUrl || window.customImageDataUrl;
+            window.customImageDataUrl = customImageDataUrl;
+            
+            console.log("✅ Custom image exists, preserving:");
+            console.log("- selectedTemplate set to:", selectedTemplate);
+            console.log("- customImageDataUrl length:", customImageDataUrl ? customImageDataUrl.length : 0);
+            
+            // Keep the custom image in preview
+            document.getElementById("previewImage").src = customImageDataUrl;
+            
+            // Show the clear custom image button
+            document.getElementById("clearCustomImageBtn").classList.remove("d-none");
+        } else {
+            // No custom image - use template
+            selectedTemplate = mapImageSrcToTemplate(imagePath);
+            window.selectedTemplate = selectedTemplate;
+            customImageDataUrl = "";
+            window.customImageDataUrl = "";
+            
+            console.log("🎯 No custom image exists, setting template to:", selectedTemplate);
+            console.log("🎯 Image path used:", imagePath);
+            console.log("🎯 Preview image will show:", imagePath);
+            document.getElementById("previewImage").src = imagePath;
+            
+            // Hide the clear custom image button
+            document.getElementById("clearCustomImageBtn").classList.add("d-none");
+        }
+        
+        console.log("🏁 openCustomize FINAL STATE:");
+        console.log("  - selectedTemplate:", selectedTemplate);
+        console.log("  - window.selectedTemplate:", window.selectedTemplate);
+        console.log("  - customImageDataUrl exists:", !!customImageDataUrl);
+        console.log("  - Preview image src:", document.getElementById("previewImage").src);
+        
+        document.getElementById("cardTitle").value = title;
+        document.getElementById("cardMessage").value = message;
+        new bootstrap.Modal(document.getElementById("customizeModal")).show();
+    }
+
+    // Helper function to map image source to template name (exactly like SendCard logic)
+    function mapImageSrcToTemplate(imageSrc) {
+        console.log("🎯 mapImageSrcToTemplate called with:", imageSrc);
+        
+        let templateName = "birthday"; // default fallback
+        
+        if (imageSrc.includes("1c.jpg")) templateName = "birthday";
+        else if (imageSrc.includes("2c.jpg")) templateName = "wedding";
+        else if (imageSrc.includes("3c.jpg")) templateName = "newyear";
+        else if (imageSrc.includes("4c.jpg")) templateName = "eid-fitr";
+        else if (imageSrc.includes("5c.jpg")) templateName = "eid-adha";
+        else if (imageSrc.includes("6c.jpg")) templateName = "christmas";
+        else if (imageSrc.includes("7c.webp")) templateName = "thanksgiving";
+        else if (imageSrc.includes("8c.jpg")) templateName = "diwali";
+        
+        console.log("🎯 Mapped to template:", templateName);
+        console.log("🎯 Image path analysis:");
+        console.log("  - Contains '1c.jpg':", imageSrc.includes("1c.jpg"));
+        console.log("  - Contains '2c.jpg':", imageSrc.includes("2c.jpg"));
+        console.log("  - Contains '3c.jpg':", imageSrc.includes("3c.jpg"));
+        console.log("  - Contains '4c.jpg':", imageSrc.includes("4c.jpg"));
+        console.log("  - Contains '5c.jpg':", imageSrc.includes("5c.jpg"));
+        console.log("  - Contains '6c.jpg':", imageSrc.includes("6c.jpg"));
+        console.log("  - Contains '7c.webp':", imageSrc.includes("7c.webp"));
+        console.log("  - Contains '8c.jpg':", imageSrc.includes("8c.jpg"));
+        
+        return templateName;
+    }
+
+    // Email form submission using EXACT same logic as SendCard.cshtml
+    document.getElementById("emailsForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        console.log("Email form submitted");
+
+        // Validate form first
+        if (!e.target.checkValidity()) {
+            e.target.classList.add("was-validated");
+            return;
+        }
+
+        // Get emails from form
+        const emails = Array.from(document.querySelectorAll("#emailsContainer input"))
+                            .map(i => i.value.trim())
+                            .filter(e => e !== "");
+
+        if (emails.length === 0) {
+            alert("Please add at least one email address.");
+            return;
+        }
+
+        // Get form data
+        const title = document.getElementById("cardTitle").value.trim();
+        const message = document.getElementById("cardMessage").value.trim();
+
+        if (!title || !message) {
+            alert("Please fill in both title and message.");
+            return;
+        }
+
+        console.log("=== EMAIL FORM SUBMISSION DEBUG ===");
+        console.log("🔥 Test value from updateImageFromFile:", window.testCustomImage);
+        console.log("🔥 Image upload attempted:", window.imageUploadAttempted);
+        console.log("🔥 Image upload timestamp:", window.imageUploadTimestamp);
+        console.log("selectedTemplate:", selectedTemplate);
+        console.log("window.selectedTemplate:", window.selectedTemplate);
+        console.log("globalThis.selectedTemplate:", globalThis.selectedTemplate);
+        console.log("customImageDataUrl exists:", !!customImageDataUrl);
+        console.log("window.customImageDataUrl exists:", !!window.customImageDataUrl);
+        console.log("globalThis.customImageDataUrl exists:", !!globalThis.customImageDataUrl);
+        console.log("customImageDataUrl length:", customImageDataUrl ? customImageDataUrl.length : 0);
+        console.log("window.customImageDataUrl length:", window.customImageDataUrl ? window.customImageDataUrl.length : 0);
+        console.log("globalThis.customImageDataUrl length:", globalThis.customImageDataUrl ? globalThis.customImageDataUrl.length : 0);
+        
+        // Check sessionStorage as fallback
+        let sessionTemplate = null;
+        let sessionImageData = null;
+        try {
+            sessionTemplate = sessionStorage.getItem('selectedTemplate');
+            sessionImageData = sessionStorage.getItem('customImageData');
+            console.log("sessionStorage selectedTemplate:", sessionTemplate);
+            console.log("sessionStorage customImageData exists:", !!sessionImageData);
+            console.log("sessionStorage customImageData length:", sessionImageData ? sessionImageData.length : 0);
+        } catch (e) {
+            console.warn("Could not access sessionStorage:", e);
+        }
+        
+        console.log("Form data:", { selectedTemplate, customImageDataUrl: !!customImageDataUrl, title, message, emails });
+
+        // Prepare form data using multiple fallback sources
+        let formData;
+        
+        // Use multiple sources with priority order
+        const finalSelectedTemplate = window.selectedTemplate || globalThis.selectedTemplate || sessionTemplate || selectedTemplate || 'birthday';
+        const finalCustomImageDataUrl = window.customImageDataUrl || globalThis.customImageDataUrl || sessionImageData || customImageDataUrl || '';
+        
+        console.log("Final values being used:");
+        console.log("- finalSelectedTemplate:", finalSelectedTemplate);
+        console.log("- finalCustomImageDataUrl length:", finalCustomImageDataUrl.length);
+        console.log("- Source: window =", window.selectedTemplate, ", globalThis =", globalThis.selectedTemplate, ", session =", sessionTemplate, ", local =", selectedTemplate);
+        console.log("- Image Source: window exists =", !!window.customImageDataUrl, ", globalThis exists =", !!globalThis.customImageDataUrl, ", session exists =", !!sessionImageData, ", local exists =", !!customImageDataUrl);
+        
+        if (finalSelectedTemplate === 'custom' && finalCustomImageDataUrl) {
+            // For custom image, send the base64 data
+            formData = {
+                Image: 'custom',
+                CustomImageData: finalCustomImageDataUrl,
+                Title: title,
+                Message: message,
+                Emails: emails
+            };
+            console.log("✅ SENDING CUSTOM IMAGE DATA");
+            console.log("- Image:", formData.Image);
+            console.log("- CustomImageData length:", formData.CustomImageData.length);
+        } else {
+            // For template selection
+            formData = {
+                Image: finalSelectedTemplate,
+                Title: title,
+                Message: message,
+                Emails: emails
+            };
+            console.log("❌ SENDING TEMPLATE (NOT CUSTOM)");
+            console.log("- Image:", formData.Image);
+            console.log("- Reason: finalSelectedTemplate is", finalSelectedTemplate, "and finalCustomImageDataUrl exists:", !!finalCustomImageDataUrl);
+            console.log("- Original selectedTemplate was:", selectedTemplate);
+            console.log("- Original customImageDataUrl exists:", !!customImageDataUrl);
+        }
+
+        // Show loading state
+        const submitBtn = document.querySelector("#emailsForm button[type='submit']");
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+
+        console.log("Sending request to /Home/SendCard with data:", formData);
+
+        // Send using EXACT same logic as SendCard.cshtml
+        fetch('/Home/SendCard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => {
+            console.log("Response received:", res.status);
+            return res.json();
+        })
+        .then(data => {
+            console.log("Response data:", data);
+            if (data.success) {
+                alert(`✅ ${data.message || "Card sent successfully!"}\n\nCards sent: ${data.cardsSent || emails.length}\nRemaining today: ${data.remainingCards || 0}`);
+                // Close the modal
+                bootstrap.Modal.getInstance(document.getElementById("emailsModal")).hide();
+                // Reset form
+                document.getElementById("emailsForm").reset();
+                resetEmailContainer();
+            } else {
+                if (data.requiresSubscription) {
+                    alert("❌ " + data.error + "\n\nWould you like to subscribe now?");
+                    // Close email modal and show subscription modal
+                    bootstrap.Modal.getInstance(document.getElementById("emailsModal")).hide();
+                    new bootstrap.Modal(document.getElementById("subscribeModal")).show();
+                } else {
+                    alert("❌ " + (data.error || "Failed to send card. Please try again."));
+                    if (data.details) {
+                        console.error("Error details:", data.details);
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Network error:", err);
+            alert("❌ Network error. Please check your connection and try again.");
+        })
+        .finally(() => {
+            // Restore button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+    });
+
+    // Helper function to reset email container
+    function resetEmailContainer() {
+        document.getElementById("emailsContainer").innerHTML = `
+            <div class="input-group mb-2 email-field">
+                <input type="email" name="emails[]" class="form-control" placeholder="Enter email" required>
+                <button type="button" class="btn btn-outline-danger d-none" onclick="removeEmailField(this)">Remove</button>
+                <div class="invalid-feedback">Please enter a valid email address</div>
+            </div>
+        `;
+        document.getElementById("addEmailBtn").classList.remove("d-none");
+    }
+
+        </script>

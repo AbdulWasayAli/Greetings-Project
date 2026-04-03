@@ -1,0 +1,30 @@
+﻿<div class="top-navbar">
+    <p>GREETINGS – SPREADING SMILES WITH EVERY CARD</p>
+    <div class="icons">
+
+        @if (Context.Session.GetString("UserName") != null)
+        {
+            <!-- Agar user login hai -->
+            <span>
+                <img src="~/User/images/register.png" alt="" width="18px">
+                Welcome, @Context.Session.GetString("UserName")!
+            </span>
+
+            <a asp-controller="Home" asp-action="Logout">
+                <img src="~/User/images/register.png" alt="" width="18px"> Logout
+            </a>
+        }
+        else
+        {
+            <!-- Agar user login nahi hai -->
+            <a asp-controller="Home" asp-action="Login">
+                <img src="~/User/images/register.png" alt="" width="18px"> Login
+            </a>
+
+            <a asp-controller="Home" asp-action="Register">
+                <img src="~/User/images/register.png" alt="" width="18px"> Register
+            </a>
+        }
+
+    </div>
+</div>

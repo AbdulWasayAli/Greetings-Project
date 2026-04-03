@@ -1,0 +1,194 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <title>@ViewData["Title"]</title>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/Dashboard/assets/images/favicon.ico">
+    <!-- third party css -->
+    <link href="~/Dashboard/assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- third party css end -->
+    <!-- App css -->
+    <link href="~/Dashboard/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Dashboard/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-style" />
+    
+    <!-- Custom Admin Styles -->
+    <style>
+        .leftside-menu .side-nav li a {
+            color: #333 !important;
+        }
+        .leftside-menu .side-nav li a:hover,
+        .leftside-menu .side-nav li a:focus {
+            background-color: #f8f9fa;
+            color: #000 !important;
+        }
+        .leftside-menu .side-nav li.active > a,
+        .leftside-menu .side-nav li.active > a:hover,
+        .leftside-menu .side-nav li.active > a:focus {
+            background-color: #ffffff !important;
+            color: #000 !important;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .leftside-menu .side-nav .side-nav-title {
+            color: #6c757d !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Ensure proper content positioning */
+        .content-page {
+            margin-left: 240px; /* Adjust based on sidebar width */
+            min-height: 100vh;
+        }
+        
+        /* Fix table responsive issues */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Mobile responsive */
+        @@media (max-width: 991.98px) {
+            .content-page {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <partial name="_AdminHeader"></partial>
+    
+    @RenderBody()
+
+    <!-- bundle -->
+    <script src="~/Dashboard/assets/js/vendor.min.js"></script>
+    <script src="~/Dashboard/assets/js/app.min.js"></script>
+    <!-- third party js -->
+    <script src="~/Dashboard/assets/js/vendor/apexcharts.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- third party js ends -->
+    <!-- demo app -->
+    <script src="~/Dashboard/assets/js/pages/demo.dashboard.js"></script>
+    <!-- end demo js-->
+    
+    <script>
+        function showCreateSubscriptionModal() {
+            // Redirect to subscriptions page if not already there
+            if (!window.location.href.includes('/Admin/Subscriptions')) {
+                window.location.href = '@Url.Action("Subscriptions", "Admin")';
+            } else {
+                // If already on subscriptions page, trigger the modal
+                if (typeof $('#createSubscriptionModal').modal === 'function') {
+                    $('#createSubscriptionModal').modal('show');
+                }
+            }
+        }
+        
+        // Comprehensive admin navigation lock
+        $(document).ready(function() {
+            // Prevent all forms of navigation away from admin panel
+            const adminDashboardUrl = '@Url.Action("Dashboard", "Admin")';
+            const currentUrl = window.location.href;
+            
+            // Function to force redirect to admin dashboard
+            function enforceAdminLock() {
+                if (!window.location.href.includes('/Admin/')) {
+                    window.location.replace(adminDashboardUrl);
+                }
+            }
+            
+            // Clear history and set initial state
+            if (window.history.replaceState) {
+                window.history.replaceState({adminLocked: true}, 'Admin Dashboard', currentUrl);
+            }
+            
+            // Handle popstate (back/forward buttons)
+            window.addEventListener('popstate', function(event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                
+                // Force redirect back to admin dashboard
+                window.location.replace(adminDashboardUrl);
+                return false;
+            }, true);
+            
+            // Prevent navigation using browser shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Prevent Alt+Left (back), Alt+Right (forward)
+                if (e.altKey && (e.keyCode === 37 || e.keyCode === 39)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                
+                // Prevent Backspace navigation (when not in input fields)
+                if (e.keyCode === 8 && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, true);
+            
+            // Monitor for URL changes
+            let lastUrl = window.location.href;
+            setInterval(function() {
+                if (window.location.href !== lastUrl) {
+                    lastUrl = window.location.href;
+                    if (!lastUrl.includes('/Admin/')) {
+                        window.location.replace(adminDashboardUrl);
+                    }
+                }
+            }, 100);
+            
+            // Override browser navigation methods
+            const originalPushState = history.pushState;
+            const originalReplaceState = history.replaceState;
+            
+            history.pushState = function(state, title, url) {
+                if (url && !url.includes('/Admin/')) {
+                    window.location.replace(adminDashboardUrl);
+                    return;
+                }
+                return originalPushState.apply(this, arguments);
+            };
+            
+            history.replaceState = function(state, title, url) {
+                if (url && !url.includes('/Admin/') && !state?.adminLocked) {
+                    window.location.replace(adminDashboardUrl);
+                    return;
+                }
+                return originalReplaceState.apply(this, arguments);
+            };
+            
+            // Handle page visibility change
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    enforceAdminLock();
+                }
+            });
+            
+            // Prevent beforeunload default behavior
+            window.addEventListener('beforeunload', function(e) {
+                if (!window.location.href.includes('/Admin/')) {
+                    e.preventDefault();
+                    window.location.replace(adminDashboardUrl);
+                }
+            }, true);
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

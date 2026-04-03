@@ -1,0 +1,551 @@
+﻿
+<!-- FEEDBACK SECTION -->
+<section class="feedback-section" style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
+
+    <!-- Left Side Image -->
+    <div class="feedback-image" style="flex: 1; min-width: 300px; text-align: center;">
+        <img src="~/User/images/feedback.form.jpg" alt="Feedback" style="max-width: 100%; height: auto; border-radius: 10px;">
+    </div>
+
+    <!-- Right Side Form -->
+    <div class="feedback-container" style="flex: 1; min-width: 350px;">
+        <h2>FEEDBACK FORM</h2>
+        <form id="feedbackForm" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- Full Name -->
+            <label for="userName">Full Name</label>
+            <input type="text" id="userName" name="userName" placeholder="Enter your name" pattern="[A-Za-z\s]{3,50}" required>
+            <span class="error" id="userNameError"></span>
+
+            <!-- Email -->
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <span class="error" id="emailError"></span>
+
+            <!-- Rating -->
+            <label for="rating">Rating</label>
+            <div class="star-rating" id="starRating">
+                <span class="star" data-value="1">⭐</span>
+                <span class="star" data-value="2">⭐</span>
+                <span class="star" data-value="3">⭐</span>
+                <span class="star" data-value="4">⭐</span>
+                <span class="star" data-value="5">⭐</span>
+            </div>
+            <input type="hidden" id="rating" name="rating" value="5" required>
+            <span class="error" id="ratingError"></span>
+
+            <!-- Feedback -->
+            <label for="message">Your Feedback</label>
+            <textarea id="message" name="message" placeholder="Write your feedback..." required maxlength="1000"></textarea>
+            <span class="error" id="messageError"></span>
+            <div class="char-counter">
+                <small id="charCount">0/1000 characters</small>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Submit Feedback</span>
+                <span id="btnLoader" class="d-none">
+                    <span class="spinner"></span> Submitting...
+                </span>
+            </button>
+        </form>
+    </div>
+
+</section>
+
+<style>
+    .feedback-section {
+        background: linear-gradient(to right, #fff, #f9f9f9);
+    }
+
+</style>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="modal-body text-center">
+      <div class="success-icon">✅</div>
+      <h3>Thank You!</h3>
+      <p>Your feedback has been submitted successfully. We appreciate your input!</p>
+      <button class="btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Scoped CSS only for Feedback Form */
+  #feedbackForm .error {
+    color: red;
+    font-size: 0.9em;
+  }
+
+  #feedbackForm input, 
+  #feedbackForm textarea, 
+  #feedbackForm select {
+    display: block;
+    margin-bottom: 5px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  /* Golden Glitter Effect on Hover */
+  #feedbackForm input:hover, 
+  #feedbackForm textarea:hover, 
+  #feedbackForm select:hover {
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 
+                inset 0 0 20px rgba(255, 215, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  #feedbackForm input:hover::before,
+  #feedbackForm textarea:hover::before,
+  #feedbackForm select:hover::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 215, 0, 0.1), 
+                transparent, 
+                rgba(255, 215, 0, 0.2), 
+                transparent);
+    background-size: 20px 20px;
+    animation: glitter-sparkle 1.5s linear infinite;
+    border-radius: 8px;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Glitter Animation */
+  @@keyframes glitter-sparkle {
+    0% { 
+      background-position: 0% 0%; 
+      opacity: 0.7;
+    }
+    50% { 
+      opacity: 1; 
+    }
+    100% { 
+      background-position: 100% 100%; 
+      opacity: 0.7;
+    }
+  }
+
+
+
+  @@keyframes golden-glow {
+    0% { 
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 
+                  0 3px 10px rgba(255, 215, 0, 0.3);
+    }
+    100% { 
+      box-shadow: 0 0 40px rgba(255, 215, 0, 1), 
+                  0 6px 20px rgba(255, 215, 0, 0.6);
+    }
+  }
+
+  @@keyframes glitter-rotate {
+    0% { 
+      transform: rotate(0deg) scale(1); 
+    }
+    25% { 
+      transform: rotate(90deg) scale(1.1); 
+    }
+    50% { 
+      transform: rotate(180deg) scale(1); 
+    }
+    75% { 
+      transform: rotate(270deg) scale(1.1); 
+    }
+    100% { 
+      transform: rotate(360deg) scale(1); 
+    }
+  }
+
+  /* Floating Sparkle Particles on Form Container Hover */
+  .feedback-section:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.3) 1px, transparent 1px),
+      radial-gradient(circle at 80% 40%, rgba(255, 215, 0, 0.4) 1px, transparent 1px),
+      radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.2) 1px, transparent 1px),
+      radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.5) 1px, transparent 1px),
+      radial-gradient(circle at 10% 60%, rgba(255, 215, 0, 0.3) 1px, transparent 1px);
+    background-size: 100px 100px, 80px 80px, 120px 120px, 60px 60px, 90px 90px;
+    animation: sparkle-float 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .feedback-section {
+    position: relative;
+  }
+
+  @@keyframes sparkle-float {
+    0%, 100% { 
+      opacity: 0.4; 
+      transform: translateY(0px); 
+    }
+    50% { 
+      opacity: 0.8; 
+      transform: translateY(-10px); 
+    }
+  }
+
+  #feedbackForm input.invalid, 
+  #feedbackForm textarea.invalid, 
+  #feedbackForm select.invalid {
+    border: 1px solid red;
+  }
+
+  #feedbackForm input.valid, 
+  #feedbackForm textarea.valid, 
+  #feedbackForm select.valid {
+    border: 1px solid green;
+  }
+
+  .char-counter {
+    text-align: right;
+    margin-top: -5px;
+    margin-bottom: 10px;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+  }
+
+  .modal-body {
+    padding: 20px 0;
+  }
+
+  .success-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  /* Star Rating Styles */
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+    font-size: 24px;
+  }
+  
+  .star {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    filter: grayscale(100%);
+  }
+  
+  .star:hover,
+  .star.active {
+    filter: none;
+    transform: scale(1.1);
+  }
+  
+  .star.active {
+    text-shadow: 0 0 10px #ffd700;
+  }
+
+  .d-none {
+    display: none !important;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('feedbackForm');
+
+  const userName = document.getElementById('userName');
+  const email = document.getElementById('email');
+  const message = document.getElementById('message');
+  const rating = document.getElementById('rating');
+
+  const userNameError = document.getElementById('userNameError');
+  const emailError = document.getElementById('emailError');
+  const messageError = document.getElementById('messageError');
+  const ratingError = document.getElementById('ratingError');
+
+  // Star Rating Functionality
+  const stars = document.querySelectorAll('.star');
+  let selectedRating = 5; // Default to 5 stars
+  
+  // Set initial state (5 stars active)
+  updateStarDisplay(5);
+  
+  stars.forEach((star, index) => {
+    star.addEventListener('click', function() {
+      selectedRating = index + 1;
+      rating.value = selectedRating;
+      updateStarDisplay(selectedRating);
+    });
+    
+    star.addEventListener('mouseenter', function() {
+      updateStarDisplay(index + 1);
+    });
+  });
+  
+  document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+    updateStarDisplay(selectedRating);
+  });
+  
+  function updateStarDisplay(rating) {
+    stars.forEach((star, index) => {
+      if (index < rating) {
+        star.classList.add('active');
+      } else {
+        star.classList.remove('active');
+      }
+    });
+  }
+
+  // Check if all elements exist before adding event listeners
+  if (!form || !userName || !email || !message || !userNameError || !emailError || !messageError) {
+    console.error('Some form elements are missing');
+    return;
+  }
+
+  function validateField(field) {
+    if (field === userName) {
+      const namePattern = /^[A-Za-z\s]{3,50}$/;
+      if (userName.value.trim() !== '' && namePattern.test(userName.value.trim())) {
+        userName.classList.remove('invalid');
+        userNameError.textContent = '';
+      }
+    } 
+    else if (field === email) {
+      if (email.value.trim() !== '' && email.validity.valid) {
+        email.classList.remove('invalid');
+        emailError.textContent = '';
+      }
+    }
+    else if (field === message) {
+      if (message.value.trim() !== '') {
+        message.classList.remove('invalid');
+        messageError.textContent = '';
+      }
+    }
+  }
+
+  [userName, email, message].forEach(field => {
+    field.addEventListener('input', () => validateField(field));
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    [userName, email, message].forEach(f => f.classList.remove('invalid'));
+    [userNameError, emailError, messageError].forEach(s => s.textContent = '');
+
+    // ✅ Full Name Validation (alphabets + spaces only, min 3 chars)
+    const namePattern = /^[A-Za-z\s]{3,50}$/;
+    if (userName.value.trim() === '') {
+      valid = false;
+      userName.classList.add('invalid');
+      userNameError.textContent = 'Name is required';
+    } else if (!namePattern.test(userName.value.trim())) {
+      valid = false;
+      userName.classList.add('invalid');
+      userNameError.textContent = 'Only alphabets allowed (3-50 characters)';
+    }
+
+    // ✅ Email Validation (using built-in validation)
+    if (email.value.trim() === '') {
+      valid = false;
+      email.classList.add('invalid');
+      emailError.textContent = 'Email is required';
+    } else if (!email.validity.valid) {
+      valid = false;
+      email.classList.add('invalid');
+      emailError.textContent = 'Enter a valid email';
+    }
+
+    // ✅ Feedback Validation
+    if (message.value.trim() === '') {
+      valid = false;
+      message.classList.add('invalid');
+      messageError.textContent = 'Feedback is required';
+    }
+
+    if (valid) {
+      // Show loading state
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnLoader = document.getElementById('btnLoader');
+      
+      submitBtn.disabled = true;
+      btnText.classList.add('d-none');
+      btnLoader.classList.remove('d-none');
+
+      // Create form data
+      const formData = new FormData();
+      formData.append('userName', userName.value.trim());
+      formData.append('email', email.value.trim());
+      formData.append('message', message.value.trim());
+      
+      // Add anti-forgery token
+      const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+      formData.append('__RequestVerificationToken', token);
+
+      // Submit feedback
+      fetch('@Url.Action("SubmitFeedback", "Home")', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          // Show success modal
+          document.getElementById('successModal').style.display = 'block';
+          form.reset();
+        } else {
+          alert('Error: ' + (result.error || 'Failed to submit feedback'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Network error occurred. Please try again.');
+      })
+      .finally(() => {
+        // Hide loading state
+        submitBtn.disabled = false;
+        btnText.classList.remove('d-none');
+        btnLoader.classList.add('d-none');
+      });
+    }
+  });
+
+  // Character counter
+  const charCount = document.getElementById('charCount');
+  
+  if (message && charCount) {
+    message.addEventListener('input', function() {
+      const currentLength = this.value.length;
+      charCount.textContent = `${currentLength}/1000 characters`;
+      
+      if (currentLength > 900) {
+        charCount.style.color = '#dc3545';
+      } else if (currentLength > 800) {
+        charCount.style.color = '#ffc107';
+      } else {
+        charCount.style.color = '#6c757d';
+      }
+    });
+  }
+});
+
+// Global modal functions (accessible from HTML onclick attributes)
+function closeModal() {
+  const modal = document.getElementById('successModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+// Initialize modal handlers when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Close modal with X button
+  const closeButton = document.querySelector('.close');
+  if (closeButton) {
+    closeButton.onclick = function() {
+      closeModal();
+    }
+  }
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('successModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+}
+</script>

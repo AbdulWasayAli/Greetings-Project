@@ -1,0 +1,58 @@
+{
+    "name": "php-flasher/flasher-laravel",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://php-flasher.io",
+    "description": "Seamlessly integrate flash notifications into your Laravel applications with PHPFlasher. Enhance user feedback and engagement with minimal setup.",
+    "keywords": [
+        "laravel",
+        "php",
+        "flash-notifications",
+        "phpflasher",
+        "user-feedback",
+        "open-source"
+    ],
+    "support": {
+        "issues": "https://github.com/php-flasher/php-flasher/issues",
+        "source": "https://github.com/php-flasher/php-flasher"
+    },
+    "authors": [
+        {
+            "name": "Younes ENNAJI",
+            "email": "younes.ennaji.pro@gmail.com",
+            "homepage": "https://www.linkedin.com/in/younes--ennaji/",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2",
+        "illuminate/support": "^11.0|^12.0",
+        "php-flasher/flasher": "^2.1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flasher\\Laravel\\": ""
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        },
+        "laravel": {
+            "providers": [
+                "Flasher\\Laravel\\FlasherServiceProvider"
+            ],
+            "aliases": {
+                "Flasher": "Flasher\\Laravel\\Facade\\Flasher"
+            }
+        }
+    }
+}

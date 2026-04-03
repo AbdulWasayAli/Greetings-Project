@@ -1,0 +1,222 @@
+﻿<!-- Video Background -->
+<div class="video-bg">
+    <video autoplay muted loop>
+        <source src="~/User/images/iiii.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<!-- LOGIN FORM -->
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg bg-transparent"
+         style="max-width: 1000px; width: 100%; border-radius: 16px;
+              backdrop-filter: blur(12px); background: rgba(255,255,255,0.08);">
+        <div class="row g-0">
+
+            <!-- Left Side -->
+            <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-white p-5"
+                 style="background: rgba(67,0,86,0.6); border-radius:16px 0 0 16px;">
+                <h3 class="mb-3">Welcome Back!</h3>
+                <p class="text-center">Login to continue and explore amazing features</p>
+            </div>
+
+            <!-- Right Side (Transparent Glass Form) -->
+            <div class="col-md-7 p-5 text-white"
+                 style="border-radius:0 16px 16px 0; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+
+                <!-- Heading Section -->
+                <h3 class="text-center form-heading mb-2">Account Login</h3>
+                <p class="text-center text-light mb-4">Please enter your details to continue</p>
+
+                <!-- Login Form -->
+                <form asp-action="Login" method="post" class="needs-validation" novalidate>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control rounded" placeholder="Email" required>
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="password" name="password" id="passwordInput2"
+                                   class="form-control rounded-start"
+                                   placeholder="Password" minlength="6" required>
+                            <button class="btn toggle-password" type="button" data-target="passwordInput2">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <div class="invalid-feedback">Password must be at least 6 characters long.</div>
+                        </div>
+                    </div>
+
+                    <!-- Login Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-gradient text-white fw-bold py-2 rounded">
+                            LOG IN
+                        </button>
+                        <br />
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                @TempData["SuccessMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @TempData["ErrorMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                    </div>
+                </form>
+
+                <!-- Register Link -->
+                <p class="text-center">
+                    Don’t have an account?
+                    <a asp-controller="Home" asp-action="Register" class="fw-bold text-warning text-decoration-none">Register</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    .video-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Input fields */
+    .form-control {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: #fff !important;
+        backdrop-filter: blur(4px);
+    }
+
+        .form-control::placeholder {
+            color: #fff !important;
+            opacity: 0.9;
+        }
+
+        .form-control:focus {
+            border: 1px solid #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            color: #fff !important;
+        }
+
+        .form-control:hover {
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+    /* Password toggle button (same as register form) */
+    .input-group .btn {
+        background: linear-gradient(135deg, #430056, #ffae00);
+        border: none;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s ease;
+    }
+
+        .input-group .btn i {
+            color: #fff;
+            font-size: 16px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+        }
+
+        .input-group .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+    /* Gradient Button */
+    .btn-gradient {
+        background: linear-gradient(135deg, #430056, #ffae00);
+        border: none;
+        transition: 0.3s ease-in-out;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #ffae00, #430056);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            transform: scale(1.05);
+        }
+
+    /* Autofill Fix */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.15) inset !important;
+        -webkit-text-fill-color: #fff !important;
+        caret-color: #fff !important;
+        transition: background-color 5000s ease-in-out 0s !important;
+    }
+
+
+    /* Heading */
+    .form-heading {
+        color: #ffae00;
+        font-weight: bold;
+    }
+</style>
+
+
+
+
+<!-- JS for Bootstrap validation -->
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+      button.addEventListener('click', function () {
+        const target = document.getElementById(this.getAttribute('data-target'));
+        const icon = this.querySelector('i');
+        if (target.type === 'password') {
+          target.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          target.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      });
+    });
+</script>
+
+
+<script>
+  (function () {
+    'use strict';
+    let forms = document.querySelectorAll('form');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>

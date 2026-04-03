@@ -1,0 +1,71 @@
+/* Section Heading */
+.contact-title {
+  font-size: 28px;
+  font-weight: bold;
+ color: #ffc800;
+ text-shadow: 1px 1px 1px black;
+  margin-bottom: 10px;
+}
+
+.contact-subtitle {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Info Cards */
+.contact-card {
+  text-align: center;
+  padding: 20px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 15px rgba(13, 136, 13, 0.08);
+  transition: transform 0.3s;
+}
+
+.contact-card i {
+  color: rgb(67, 0, 86);
+  margin-bottom: 10px;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Form Fields */
+.form-control {
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 6px rgb(70, 174, 203);
+  outline: none;
+}
+
+/* Button */
+.contact-btn {
+  background: linear-gradient(135deg, rgb(67, 0, 86), rgb(255, 174, 0));
+  color: #fff;
+  padding: 12px 35px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+    /* Remove default focus/active blue outline */
+    .contact-btn:focus,
+    .contact-btn:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }

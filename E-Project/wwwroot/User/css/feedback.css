@@ -1,0 +1,95 @@
+ .feedback-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    .feedback-container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 550px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .feedback-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #ffc800;
+       text-shadow: 1px 1px 1px black;
+      font-size: 26px;
+      position: relative;
+    }
+
+    .feedback-container h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: rgb(255, 174, 0);
+      margin: 8px auto 0;
+      border-radius: 2px;
+    }
+
+    .feedback-container label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .feedback-container input,
+    .feedback-container textarea,
+    .feedback-container select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+
+    .feedback-container input:focus,
+    .feedback-container textarea:focus,
+    .feedback-container select:focus {
+      border-color:  rgb(70, 174, 203);
+      box-shadow: 0 0 6px rgba(67, 0, 86, 0.3);
+      outline: none;
+      background: #fff;
+    }
+
+    .feedback-container textarea {
+      resize: none;
+      height: 130px;
+    }
+
+    .feedback-container button {
+      width: 100%;
+      background: linear-gradient(135deg, rgb(67, 0, 86), rgb(255, 174, 0));
+      color: white;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, opacity 0.3s;
+    }
+
+    .feedback-container button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+
+    

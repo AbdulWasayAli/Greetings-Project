@@ -1,0 +1,130 @@
+@model User
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("UserDetails", "Admin", new { id = Model.Id })" class="btn btn-info me-2">
+                                <i class="mdi mdi-eye"></i> View Details
+                            </a>
+                            <a href="@Url.Action("Users", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Users
+                            </a>
+                        </div>
+                        <h4 class="page-title">Edit User</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <div class="avatar-lg rounded-circle bg-primary mx-auto mb-3">
+                                    <span class="avatar-title text-white" style="font-size: 2em;">
+                                        @Model.Name.Substring(0, 1).ToUpper()
+                                    </span>
+                                </div>
+                                <h5 class="mb-0">Editing: @Model.Name</h5>
+                                <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-success")">
+                                    Current Role: @Model.Role
+                                </span>
+                            </div>
+                            
+                            <form method="post" action="@Url.Action("EditUser", "Admin")">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="Id" value="@Model.Id" />
+                                
+                                <div class="mb-3">
+                                    <label for="Name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control @(ViewData.ModelState["Name"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                           id="Name" name="Name" value="@Model.Name" placeholder="Enter full name" required>
+                                    @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @ViewData.ModelState["Name"].Errors.First().ErrorMessage
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                           id="Email" name="Email" value="@Model.Email" placeholder="Enter email address" required>
+                                    @if (ViewData.ModelState["Email"]?.Errors.Count > 0)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @ViewData.ModelState["Email"].Errors.First().ErrorMessage
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control @(ViewData.ModelState["Phone"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                           id="Phone" name="Phone" value="@Model.Phone" placeholder="Enter phone number" required>
+                                    @if (ViewData.ModelState["Phone"]?.Errors.Count > 0)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @ViewData.ModelState["Phone"].Errors.First().ErrorMessage
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Password" class="form-label">New Password (Optional)</label>
+                                    <input type="password" class="form-control @(ViewData.ModelState["Password"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                           id="Password" name="Password" placeholder="Enter new password (leave empty to keep current)">
+                                    @if (ViewData.ModelState["Password"]?.Errors.Count > 0)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @ViewData.ModelState["Password"].Errors.First().ErrorMessage
+                                        </div>
+                                    }
+                                    <small class="form-text text-muted">Leave empty to keep current password. Minimum 6 characters if changing.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Role" class="form-label">User Role</label>
+                                    <select class="form-select @(ViewData.ModelState["Role"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                            id="Role" name="Role" required>
+                                        <option value="User" selected="@(Model.Role == "User")">User</option>
+                                        <option value="Admin" selected="@(Model.Role == "Admin")">Admin</option>
+                                    </select>
+                                    @if (ViewData.ModelState["Role"]?.Errors.Count > 0)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @ViewData.ModelState["Role"].Errors.First().ErrorMessage
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success me-2">
+                                        <i class="mdi mdi-check"></i> Update User
+                                    </button>
+                                    <a href="@Url.Action("UserDetails", "Admin", new { id = Model.Id })" class="btn btn-info me-2">
+                                        <i class="mdi mdi-eye"></i> View Details
+                                    </a>
+                                    <a href="@Url.Action("Users", "Admin")" class="btn btn-secondary">
+                                        <i class="mdi mdi-close"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

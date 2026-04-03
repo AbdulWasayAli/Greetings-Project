@@ -1,0 +1,98 @@
+@model List<Card>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Manage Cards";
+}
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <a href="@Url.Action("CreateCard", "Admin")" class="btn btn-success me-2">
+                                <i class="mdi mdi-plus"></i> Create New Card
+                            </a>
+                            <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-primary">
+                                <i class="mdi mdi-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                        <h4 class="page-title">Manage Cards</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="header-title">All Cards</h4>
+                                <span class="badge bg-info">Total: @Model.Count</span>
+                            </div>
+
+                            <div class="row">
+                                @foreach (var card in Model)
+                                {
+                                    <div class="col-lg-4 col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                @if (!string.IsNullOrEmpty(card.MediaPath))
+                                                {
+                                                    <img src="@card.MediaPath" alt="@card.Title" class="img-fluid mb-2" style="height: 150px; object-fit: cover; width: 100%;">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-light d-flex align-items-center justify-content-center mb-2" style="height: 150px;">
+                                                        <i class="mdi mdi-card-text" style="font-size: 3em; color: #ccc;"></i>
+                                                    </div>
+                                                }
+                                                
+                                                <h5 class="card-title">@card.Title</h5>
+                                                <p class="text-muted small">
+                                                    Category: <span class="badge bg-secondary">@(card.Category?.CategoryName ?? "No Category")</span>
+                                                </p>
+                                                <p class="card-text">@(card.Message.Length > 100 ? card.Message.Substring(0, 100) + "..." : card.Message)</p>
+                                                <p class="text-muted small">
+                                                    <i class="mdi mdi-clock-outline"></i> @card.CreatedAt.ToString("MMM dd, yyyy")
+                                                </p>
+                                            </div>
+                                            <div class="card-footer bg-light">
+                                                <div class="btn-group w-100">
+                                                    <a href="@Url.Action("EditCard", "Admin", new { id = card.CardID })" 
+                                                       class="btn btn-sm btn-info">
+                                                        <i class="mdi mdi-pencil"></i> Edit
+                                                    </a>
+                                                    <a href="@Url.Action("DeleteCard", "Admin", new { id = card.CardID })" 
+                                                       class="btn btn-sm btn-danger"
+                                                       onclick="return confirm('Are you sure you want to delete this card?')">
+                                                        <i class="mdi mdi-delete"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            
+                            @if (!Model.Any())
+                            {
+                                <div class="text-center py-4">
+                                    <i class="mdi mdi-card-text-outline" style="font-size: 3em; color: #ccc;"></i>
+                                    <h5 class="mt-2 text-muted">No Cards Found</h5>
+                                    <p class="text-muted">Create your first card to get started.</p>
+                                    <a href="@Url.Action("CreateCard", "Admin")" class="btn btn-success">
+                                        <i class="mdi mdi-plus"></i> Create First Card
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

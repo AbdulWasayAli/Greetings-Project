@@ -1,0 +1,5 @@
+{
+    "require": {
+        "php-flasher/flasher-laravel": "^2.1"
+    }
+}

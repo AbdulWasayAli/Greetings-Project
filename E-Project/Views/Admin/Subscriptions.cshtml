@@ -1,0 +1,384 @@
+@model IEnumerable<E_Project.Models.Subscription>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Subscriptions";
+}
+
+<div class="content-page">
+    <div class="content">
+        <!-- Topbar Start -->
+        <div class="navbar-custom">
+            <ul class="list-unstyled topbar-menu float-end mb-0">
+                <li class="dropdown notification-list">
+                    <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <span class="account-user-avatar">
+                            <img src="~/Dashboard/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                        </span>
+                        <span>
+                            <span class="account-user-name">Admin</span>
+                            <span class="account-position">Administrator</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-view-dashboard me-1"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="@Url.Action("Logout", "Admin")" class="dropdown-item notify-item">
+                            <i class="mdi mdi-logout me-1"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <button class="button-menu-mobile open-left">
+                <i class="mdi mdi-menu"></i>
+            </button>
+        </div>
+        <!-- end Topbar -->
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h4 class="page-title">Subscription Management</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Admin</a></li>
+                                <li class="breadcrumb-item active">Subscriptions</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <!-- Stats Row -->
+            <div class="row">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-credit-card widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Total Subscriptions</h5>
+                            <h3 class="mt-3 mb-3">@ViewBag.TotalSubscriptions</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-success me-2">All time</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-check-circle widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Active Subscriptions</h5>
+                            <h3 class="mt-3 mb-3">@ViewBag.ActiveSubscriptions</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-success me-2">Currently active</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-close-circle widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Expired</h5>
+                            <h3 class="mt-3 mb-3">@ViewBag.ExpiredSubscriptions</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-danger me-2">Expired/Deactivated</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="card widget-flat">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <i class="mdi mdi-currency-usd widget-icon"></i>
+                            </div>
+                            <h5 class="text-muted fw-normal mt-0">Total Revenue</h5>
+                            <h3 class="mt-3 mb-3">$@ViewBag.TotalRevenue</h3>
+                            <p class="mb-0 text-muted">
+                                <span class="text-success me-2">From active subscriptions</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscriptions Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-sm-5">
+                                    <h4 class="header-title">All Subscriptions</h4>
+                                    <p class="text-muted">Manage all user subscriptions</p>
+                                </div>
+                                <div class="col-sm-7">
+                                    <div class="text-sm-end">
+                                        <button type="button" class="btn btn-success mb-2 me-1" onclick="showCreateSubscriptionModal()">
+                                            <i class="mdi mdi-plus"></i> Add Subscription
+                                        </button>
+                                        <button type="button" class="btn btn-primary mb-2">
+                                            <i class="mdi mdi-refresh"></i> Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-striped dt-responsive nowrap" id="subscriptions-datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>User</th>
+                                            <th>Plan Type</th>
+                                            <th>Amount</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
+                                            <th>Payment Method</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var subscription in Model)
+                                        {
+                                            <tr>
+                                                <td>@subscription.Id</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="mdi mdi-account"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h5 class="m-0 font-size-14">@subscription.User.Name</h5>
+                                                            <p class="m-0 text-muted font-size-12">@subscription.User.Email</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-soft-primary text-primary">@subscription.PlanType</span>
+                                                </td>
+                                                <td>$@subscription.Amount</td>
+                                                <td>@subscription.StartDate.ToString("MMM dd, yyyy")</td>
+                                                <td>@subscription.EndDate.ToString("MMM dd, yyyy")</td>
+                                                <td>
+                                                    @if (subscription.Status == "Active" && subscription.EndDate > DateTime.Now)
+                                                    {
+                                                        <span class="badge bg-soft-success text-success">Active</span>
+                                                    }
+                                                    else if (subscription.Status == "Cancelled")
+                                                    {
+                                                        <span class="badge bg-soft-danger text-danger">Deactivated</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-soft-warning text-warning">Expired</span>
+                                                    }
+                                                </td>
+                                                <td>@subscription.PaymentMethod</td>
+                                                <td>
+                                                    @if (subscription.Status == "Active" && subscription.EndDate > DateTime.Now)
+                                                    {
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="cancelSubscription(@subscription.Id)">
+                                                            <i class="mdi mdi-close"></i> Deactivate
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">No actions</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col -->
+            </div>
+
+        </div> <!-- container -->
+    </div> <!-- content -->
+</div>
+
+<!-- Create Subscription Modal -->
+<div class="modal fade" id="createSubscriptionModal" tabindex="-1" aria-labelledby="createSubscriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createSubscriptionModalLabel">Create New Subscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createSubscriptionForm">
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">Select User</label>
+                        <select class="form-select" id="userId" name="userId" required>
+                            <option value="">Choose a user...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="planType" class="form-label">Plan Type</label>
+                        <select class="form-select" id="planType" name="planType">
+                            <option value="Pro">Pro Plan</option>
+                            <option value="Premium">Premium Plan</option>
+                            <option value="Enterprise">Enterprise Plan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount ($)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" value="9.99" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Duration (Months)</label>
+                        <input type="number" class="form-control" id="duration" name="duration" value="1" min="1" max="12" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label">Payment Method</label>
+                        <select class="form-select" id="paymentMethod" name="paymentMethod">
+                            <option value="Card">Credit Card</option>
+                            <option value="PayPal">PayPal</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Deactivate</button>
+                <button type="button" class="btn btn-primary" onclick="createSubscription()">Create Subscription</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- third party js -->
+    <script src="~/Dashboard/assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="~/Dashboard/assets/js/vendor/responsive.bootstrap5.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $("#subscriptions-datatable").DataTable({
+                language: {
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    }
+                },
+                drawCallback: function() {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+                }
+            });
+
+            // Load users for subscription creation
+            loadUsersForSubscription();
+
+            // Show modal if requested from URL parameter
+            @if (ViewBag.ShowModal == true)
+            {
+                <text>
+                setTimeout(function() {
+                    showCreateSubscriptionModal();
+                }, 500);
+                </text>
+            }
+        });
+
+        function showCreateSubscriptionModal() {
+            $('#createSubscriptionModal').modal('show');
+        }
+
+        function loadUsersForSubscription() {
+            $.get('@Url.Action("GetUsersForSubscription", "Admin")', function(data) {
+                var userSelect = $('#userId');
+                userSelect.empty().append('<option value="">Choose a user...</option>');
+                
+                if (data && data.length > 0) {
+                    $.each(data, function(index, user) {
+                        var disabled = user.hasActiveSubscription ? ' (Has Active Subscription)' : '';
+                        var option = '<option value="' + user.id + '"' + (user.hasActiveSubscription ? ' disabled' : '') + '>' + 
+                                   user.name + ' (' + user.email + ')' + disabled + '</option>';
+                        userSelect.append(option);
+                    });
+                }
+            }).fail(function() {
+                alert('Failed to load users');
+            });
+        }
+
+        function createSubscription() {
+            var formData = {
+                userId: parseInt($('#userId').val()),
+                planType: $('#planType').val(),
+                amount: parseFloat($('#amount').val()),
+                duration: parseInt($('#duration').val()),
+                paymentMethod: $('#paymentMethod').val()
+            };
+
+            if (!formData.userId) {
+                alert('Please select a user');
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("CreateSubscription", "Admin")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#createSubscriptionModal').modal('hide');
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while creating the subscription');
+                }
+            });
+        }
+
+        function cancelSubscription(subscriptionId) {
+            if (confirm('Are you sure you want to cancel this subscription?')) {
+                $.ajax({
+                    url: '@Url.Action("CancelSubscription", "Admin")',
+                    type: 'POST',
+                    data: { id: subscriptionId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while cancelling the subscription');
+                    }
+                });
+            }
+        }
+    </script>
+}
