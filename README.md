@@ -1,4 +1,4 @@
-# 💌 Greetings Cards Web Application (E-Project)
+# 💌 Greeting Cards
 
 [![.NET Version](https://img.shields.io/badge/.NET-8.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0.19-blue.svg)](https://docs.microsoft.com/ef/core/)
