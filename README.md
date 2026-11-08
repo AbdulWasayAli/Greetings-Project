@@ -8,6 +8,13 @@ An interactive, responsive, and full-stack ASP.NET Core 8.0 MVC web application 
 
 ---
 
+## 🌐 Live Demo
+
+- **Live URL**: [http://greetings.runasp.net](http://greetings.runasp.net)
+- **Deployment Status**: Automated CI/CD pipeline enabled via **GitHub Actions** (`main` branch triggers auto-build & deploy).
+
+---
+
 ## 📌 Project Overview
 
 **Greeting Cards** is a digital greeting cards platform that enables users to browse culturally diverse occasions, personalize greetings with bespoke text and recipient information, and preview cards through realistic front-and-back flip interactions. 
