@@ -8,6 +8,7 @@ on:
       - 'README.md'
       - 'docs/**'
       - '.gitignore'
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -37,6 +38,9 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          dangerous-clean-slate: false
           local-dir: ./publish/
           server-dir: /
           exclude: |
