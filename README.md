@@ -2,6 +2,10 @@
 
 An interactive, responsive, and full-stack ASP.NET Core 8.0 MVC web application designed for exploring, personalizing, and sending dynamic digital greeting cards across diverse occasions and festivals.
 
+<p align="center">
+  <img src="docs/images/preview.jpg" alt="Greeting Cards Website Preview" width="850" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
+</p>
+
 ---
 
 ## 📌 Project Overview
