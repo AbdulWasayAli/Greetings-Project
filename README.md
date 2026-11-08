@@ -3,32 +3,8 @@
 An interactive, responsive, and full-stack ASP.NET Core 8.0 MVC web application designed for exploring, personalizing, and sending dynamic digital greeting cards across diverse occasions and festivals.
 
 <p align="center">
-  <a href="http://greetings.runasp.net" target="_blank">
-    <img src="https://img.shields.io/badge/🔗_LIVE_DEMO-Visit_Website-success?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" height="38" />
-  </a>
-  <a href="https://github.com/AbdulWasayAli/Greetings-Project/actions" target="_blank">
-    <img src="https://img.shields.io/badge/⚙️_CI%2FCD-Automated_Deploy-blue?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI/CD Status" height="38" />
-  </a>
-  <img src="https://img.shields.io/badge/.NET-8.0-purple?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8.0" height="38" />
-  <img src="https://img.shields.io/badge/Database-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" height="38" />
+  <img src="docs/images/preview.jpg" alt="Greeting Cards Website Preview" width="850" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
 </p>
-
-<p align="center">
-  <a href="http://greetings.runasp.net" target="_blank">
-    <img src="docs/images/preview.jpg" alt="Greeting Cards Website Preview" width="850" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" />
-  </a>
-</p>
-
-<p align="center">
-  <b>🌐 Live Demo: <a href="http://greetings.runasp.net" target="_blank">http://greetings.runasp.net</a></b>
-</p>
-
----
-
-## 🌐 Live Demo
-
-- **Live URL**: [http://greetings.runasp.net](http://greetings.runasp.net)
-- **Deployment Status**: Automated CI/CD pipeline enabled via **GitHub Actions** (`main` branch triggers auto-build & deploy).
 
 ---
 
