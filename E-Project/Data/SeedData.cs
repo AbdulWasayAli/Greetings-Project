@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using E_Project.Data;   // DbContext ke liye
 using E_Project.Models; // Category class ke liye

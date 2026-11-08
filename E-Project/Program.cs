@@ -1,4 +1,4 @@
-﻿using E_Project.Data;
+using E_Project.Data;
 using E_Project.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.StaticFiles; 

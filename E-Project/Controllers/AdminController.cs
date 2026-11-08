@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using E_Project.Data;
 using E_Project.Models;
 using Microsoft.EntityFrameworkCore;
