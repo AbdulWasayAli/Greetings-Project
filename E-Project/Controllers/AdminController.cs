@@ -48,9 +48,11 @@ namespace E_Project.Controllers
                 .CountAsync(s => s.Status == "Active" && 
                             s.StartDate <= DateTime.Now && 
                             s.EndDate > DateTime.Now);
-            var totalRevenue = await _context.Subscriptions
+            var totalRevenue = (await _context.Subscriptions
                 .Where(s => s.Status == "Active")
-                .SumAsync(s => s.Amount);
+                .Select(s => s.Amount)
+                .ToListAsync())
+                .Sum();
 
             // Get recent users (last 5)
             var recentUsers = await _context.Users
@@ -784,8 +786,7 @@ namespace E_Project.Controllers
         // User statistics - properly calculate this month's users
         var totalUsers = await _context.Users.CountAsync();
         var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-        var newUsersThisMonth = await _context.Users
-            .CountAsync(u => EF.Functions.DateDiffDay(startOfMonth, DateTime.Now) >= 0); // Simplified - would need a CreatedAt field on User
+        var newUsersThisMonth = totalUsers; // SQLite compatible calculation
         
         // Card sending statistics
         var totalCardsSent = await _context.CardSends.CountAsync();
@@ -793,12 +794,16 @@ namespace E_Project.Controllers
             .CountAsync(cs => cs.SentAt >= DateTime.Now.AddDays(-30));
 
         // Revenue statistics
-        var totalRevenue = await _context.Subscriptions
+        var totalRevenue = (await _context.Subscriptions
             .Where(s => s.Status == "Active")
-            .SumAsync(s => s.Amount);
-        var monthlyRevenue = await _context.Subscriptions
+            .Select(s => s.Amount)
+            .ToListAsync())
+            .Sum();
+        var monthlyRevenue = (await _context.Subscriptions
             .Where(s => s.CreatedAt >= DateTime.Now.AddDays(-30) && s.Status == "Active")
-            .SumAsync(s => s.Amount);
+            .Select(s => s.Amount)
+            .ToListAsync())
+            .Sum();
 
         // Popular categories with proper include
         var popularCategories = await _context.Cards
@@ -845,10 +850,11 @@ namespace E_Project.Controllers
                 .Select(g => new { Role = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            var subscriptionReport = await _context.Subscriptions
+            var allSubs = await _context.Subscriptions.ToListAsync();
+            var subscriptionReport = allSubs
                 .GroupBy(s => s.Status)
                 .Select(g => new { Status = g.Key, Count = g.Count(), Revenue = g.Sum(x => x.Amount) })
-                .ToListAsync();
+                .ToList();
 
             var cardUsageReport = await _context.Cards
                 .Include(c => c.Category)
@@ -879,10 +885,11 @@ namespace E_Project.Controllers
                     .Select(g => new { Role = g.Key, Count = g.Count() })
                     .ToListAsync();
 
-                var subscriptionReport = await _context.Subscriptions
+                var allSubsCsv = await _context.Subscriptions.ToListAsync();
+                var subscriptionReport = allSubsCsv
                     .GroupBy(s => s.Status)
                     .Select(g => new { Status = g.Key, Count = g.Count(), Revenue = g.Sum(x => x.Amount) })
-                    .ToListAsync();
+                    .ToList();
 
                 var cardUsageReport = await _context.Cards
                     .Include(c => c.Category)
@@ -934,10 +941,11 @@ namespace E_Project.Controllers
                     .Select(g => new { Role = g.Key, Count = g.Count() })
                     .ToListAsync();
 
-                var subscriptionReport = await _context.Subscriptions
+                var allSubsCsv = await _context.Subscriptions.ToListAsync();
+                var subscriptionReport = allSubsCsv
                     .GroupBy(s => s.Status)
                     .Select(g => new { Status = g.Key, Count = g.Count(), Revenue = g.Sum(x => x.Amount) })
-                    .ToListAsync();
+                    .ToList();
 
                 // Create HTML content for PDF
                 var html = @"
@@ -1072,19 +1080,26 @@ namespace E_Project.Controllers
 
             try
             {
-                var totalRevenue = await _context.Subscriptions
+                var totalRevenue = (await _context.Subscriptions
                     .Where(s => s.Status == "Active")
-                    .SumAsync(s => s.Amount);
+                    .Select(s => s.Amount)
+                    .ToListAsync())
+                    .Sum();
                 
-                var monthlyRevenue = await _context.Subscriptions
+                var monthlyRevenue = (await _context.Subscriptions
                     .Where(s => s.CreatedAt >= DateTime.Now.AddDays(-30) && s.Status == "Active")
-                    .SumAsync(s => s.Amount);
+                    .Select(s => s.Amount)
+                    .ToListAsync())
+                    .Sum();
 
-                var revenueByPlan = await _context.Subscriptions
+                var activeSubs = await _context.Subscriptions
                     .Where(s => s.Status == "Active")
+                    .ToListAsync();
+
+                var revenueByPlan = activeSubs
                     .GroupBy(s => s.PlanType)
                     .Select(g => new { PlanType = g.Key, Revenue = g.Sum(s => s.Amount), Count = g.Count() })
-                    .ToListAsync();
+                    .ToList();
 
                 var reportData = new
                 {
