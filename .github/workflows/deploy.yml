@@ -42,8 +42,9 @@ jobs:
           port: 21
           dangerous-clean-slate: false
           local-dir: ./publish/
-          server-dir: /
+          server-dir: /wwwroot/
           exclude: |
             **/app.db
             **/app.db-journal
             **/uploads/**
+            **/site.zip
