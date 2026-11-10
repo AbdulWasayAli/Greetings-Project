@@ -3,6 +3,7 @@ using E_Project.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.StaticFiles; 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,35 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// ✅ Response Compression — gzip/brotli se pages fast load honge
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+    {
+        "text/css",
+        "application/javascript",
+        "text/html",
+        "application/json",
+        "image/svg+xml",
+        "text/plain"
+    });
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.SmallestSize;
+});
+
 var app = builder.Build();
+
+// ✅ Response compression FIRST — sab se pehle enable karo
+app.UseResponseCompression();
 
 app.UseHttpsRedirection();
 
@@ -28,9 +57,15 @@ app.UseHttpsRedirection();
 var provider = new FileExtensionContentTypeProvider();
 provider.Mappings[".avif"] = "image/avif";
 
+// ✅ Static files with caching — 7 days cache for images/css/js
 app.UseStaticFiles(new StaticFileOptions
 {
-    ContentTypeProvider = provider
+    ContentTypeProvider = provider,
+    OnPrepareResponse = ctx =>
+    {
+        // Static files ko 7 din tak cache karo
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
+    }
 });
 
 app.UseRouting();

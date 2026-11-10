@@ -1,5 +1,6 @@
-﻿<!-- Background Video -->
-<video autoplay muted loop playsinline class="bg-video">
+<!-- Background Video -->
+<video id="registerVideo" muted loop playsinline preload="none" class="bg-video"
+       style="background:#2d003d;">
     <source src="~/User/images/iiii.mp4" type="video/mp4">
     Your browser does not support the video tag.
 </video>
@@ -348,10 +349,19 @@
 })();
 </script>
 
-
-
-
-
+<!-- Lazy Video Loading -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            var regVideo = document.getElementById('registerVideo');
+            if (regVideo) {
+                regVideo.play().catch(function(e) {
+                    console.log('Video autoplay blocked:', e);
+                });
+            }
+        }, 1500);
+    });
+</script>
 
 
 
